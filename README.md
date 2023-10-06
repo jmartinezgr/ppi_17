@@ -6,6 +6,7 @@ App de transporte por y para estudiantes cuyo objetivo es fomentar la movilidad 
 - [Instalación](#instalación)
 - [Uso](#uso)
 - [Licencia](#licencia)
+- [Contacto](#contacto)
 
 ## Instalación
 
@@ -27,4 +28,7 @@ Este proyecto está bajo la licencia [GNU GPL v3.0]. Ver el archivo [LICENSE.md]
 
 ## Contacto
 
-correos de contacto [mperezgu@unal.edu.co - cecheverric@unal.edu.co - jmartinezgr@unal.edu.co].
+Correos de contacto:
+1. Camilo Echeverry : cecheverric@unal.edu.co
+2. Juan Jose Martinez jmartinezgr@unal.edu.co
+3. Mateo Perez : mperezgu@unal.edu.co
