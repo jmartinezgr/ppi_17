@@ -3,14 +3,14 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout, authenticate, login, logout
 from .forms import CustomUserCreationForm
 def home(request):
-    return render(request, "mainapp/home.html")
+    return render(request, "Inicio/home.html")
 
 def login(request):
     return render(request, "registration/login.html")
 
 @login_required
 def busqueda(request):
-    return render(request, "mainapp/busqueda.html")
+    return render(request, "Inicio/busqueda.html")
 
 def exit(request):
     logout(request)
