@@ -1,12 +1,14 @@
 
 from django.urls import path
-from .views import login, home, busqueda, register, exit
+from . import views
 
+# Configuración de URLs
 urlpatterns = [
-    path("", home, name="home"),
-    path("login", login, name="login"),
-    path("busqueda", busqueda, name="busqueda"),
-    path("register", register, name="register"),
+    path("", views.home, name="home"),
+    path("login", views.login, name="login"),
+    path("busqueda", views.busqueda, name="busqueda"),
+    path("register", views.register, name="register"),
+    path("verficarLicencia", views.verificarLicencia, name="verificarLicencia"),
     path("logout/", exit, name="exit"),
-    path('eventos/', home, name='lista_eventos'),
+    
 ]
