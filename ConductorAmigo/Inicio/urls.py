@@ -10,5 +10,5 @@ urlpatterns = [
     path("register", views.register, name="register"),
     path("verficarLicencia", views.verificarLicencia, name="verificarLicencia"),
     path("logout/", exit, name="exit"),
-    
+    path("viaje",views.detalle_viaje, name="detalleViaje"),
 ]

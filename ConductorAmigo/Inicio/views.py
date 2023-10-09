@@ -51,3 +51,18 @@ def register(request):
 
 def verificarLicencia(request):
     return render(request, "mainapp/verificarLicencia.html")
+
+def detalle_viaje(request):
+    viaje = {
+        'nombre_conductor': 'Juan Pérez',
+        'nombre_usuario': 'María González',
+        'documento_conductor': '123456789',
+        'documento_usuario': '987654321',
+        'lugar_destino': 'Plaza Principal Marinilla',
+        'distancia': '50 km',
+        'precio': '$5000.00',
+        'tiempo_inicial': '2023-10-10 06:00 PM',
+    }
+
+    context = {'viaje': viaje}
+    return render(request, 'mainapp/viajes.html', context)
