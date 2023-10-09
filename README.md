@@ -4,6 +4,7 @@ App de transporte por y para estudiantes cuyo objetivo es fomentar la movilidad 
 ## Tabla de Contenidos
 
 - [Instalación](#instalación)
+- [Importante](#Importante)
 - [Uso](#uso)
 - [Licencia](#licencia)
 - [Contacto](#contacto)
@@ -14,6 +15,11 @@ App de transporte por y para estudiantes cuyo objetivo es fomentar la movilidad 
 2. Ejecuta el script de instalación.
 3. Configura las variables de entorno.
 
+## Importante
+Este proyecto fue creado usando crispy-boostrap, asi que antes de iniciarlo ejecutar el siguiente codigo en consola
+```bash
+pip install crispy-bootstrap5
+```
 ## Uso
 
 Para utilizar este proyecto, sigue estos pasos:
