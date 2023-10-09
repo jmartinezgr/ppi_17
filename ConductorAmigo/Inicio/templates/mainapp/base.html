@@ -45,6 +45,9 @@
                     <li class="nav-item">
                       <a class="nav-link" href={% url "detalleViaje" %}>Viaje Activo</a>
                     </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href={% url "listaViajes" %}>Viajes Disponibles</a>
+                    </li>
                   {% endif %}
                 </ul>
               </div>
@@ -52,8 +55,6 @@
           </nav>
 
     {% block content %}{% endblock %}
-
-
     </div>
 </body>
 </html>

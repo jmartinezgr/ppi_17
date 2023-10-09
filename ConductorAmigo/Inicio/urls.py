@@ -11,4 +11,5 @@ urlpatterns = [
     path("verficarLicencia", views.verificarLicencia, name="verificarLicencia"),
     path("logout/", exit, name="exit"),
     path("viaje",views.detalle_viaje, name="detalleViaje"),
+    path('lista_viajes', views.lista_viajes, name='listaViajes'),
 ]

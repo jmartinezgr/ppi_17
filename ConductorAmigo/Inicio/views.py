@@ -15,7 +15,6 @@ def home(request):
     {'titulo': 'Trabajo en vías', 'descripcion': 'Se llevarán a cabo trabajos en las vías de la Línea 3, lo que podría causar retrasos temporales.', 'fecha': '2023-10-20'},
     {'titulo': 'Evento especial en estación', 'descripcion': 'Hoy habrá un evento especial en la estación Waterfront, con actividades y entretenimiento para los pasajeros.', 'fecha': '2023-10-22'},
     {'titulo': 'Cambio en el acceso a la estación', 'descripcion': 'El acceso a la estación Riverside se cambiará temporalmente debido a construcción.', 'fecha': '2023-10-25'},
-    # Puedes agregar más eventos con sus fechas correspondientes
 ]
 
     context = {'eventos': eventos}
@@ -80,3 +79,35 @@ def detalle_viaje(request):
 
     context = {'viaje': viaje}
     return render(request, 'mainapp/viajes.html', context)
+
+def lista_viajes(request):
+    viajes = [
+        {
+            'conductor': 'Juan Pérez',
+            'destino': 'Plaza Principal',
+            'hora_salida': '09:00 AM',
+        },
+        {
+            'conductor': 'María González',
+            'destino': 'Parque Central',
+            'hora_salida': '10:30 AM',
+        },
+        {
+            'conductor': 'Carlos Rodríguez',
+            'destino': 'Estación de Tren',
+            'hora_salida': '12:15 PM',
+        },
+        {
+            'conductor': 'Laura Martínez',
+            'destino': 'Centro Comercial',
+            'hora_salida': '02:00 PM',
+        },
+        {
+            'conductor': 'Pedro Sánchez',
+            'destino': 'Museo de Arte',
+            'hora_salida': '03:45 PM',
+        },
+    ]
+
+    context = {'viajes': viajes}
+    return render(request, 'mainapp/lista_viajes.html', context)
