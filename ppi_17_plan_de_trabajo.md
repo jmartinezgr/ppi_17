@@ -12,7 +12,7 @@ Este plan de trabajo detalla la distribución de tareas y el cronograma de desar
 - Diseño de la interfaz de registro y perfil de conductores (Mateo Perez Gutierrez).
 - Diseño de la interfaz de búsqueda de estudiantes (Camilo Echeverri).
 - Diseño de la interfaz de búsqueda de conductores (Mateo Perez Gutierrez).
-- Diseño de la interfaz para el cálculo de precios del servicio (Juan Jose Martinez Grisales).
+- Diseño de la interfaz para viajes activos(Juan Jose Martinez Grisales).
 - Diseño de la interfaz para recibir notificaciones de retrasos en el metro (Juan Jose Martinez Grisales).
 - Diseño de la interfaz para anunciar rutas (Juan Jose Martinez).
 - Diseño de la interfaz para anunciar cupos disponibles (Mateo Perez Gutierrez).
