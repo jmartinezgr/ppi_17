@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout, authenticate, login, logout
 from .forms import CustomUserCreationForm
+from .forms import UserSearchForm
+
 
 def home(request):
     return render(request, "mainapp/home.html")
@@ -10,7 +12,7 @@ def login(request):
     return render(request, "registration/login.html")
 
 #@login_required
-def busqueda(request):
+def busquedaGeneral(request):
     return render(request, "mainapp/busqueda.html")
 
 def exit(request):
@@ -37,3 +39,15 @@ def register(request):
 
 def verificarLicencia(request):
     return render(request, "mainapp/verificarLicencia.html")
+
+
+def buscar_usuario(request):
+    form = UserSearchForm(request.POST)
+    data_returned = None
+    if request.method == 'POST':
+        if form.is_valid():
+           data_returned = form.search()
+        else:
+            form = UserSearchForm()
+
+    return render(request, 'mainapp/busqueda.html', {'form': form, 'data_returned': data_returned})
