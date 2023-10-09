@@ -2,6 +2,33 @@
 
 {% block content %}
 
-<h3>Inicio</h3>
+{% load crispy_forms_tags %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Búsqueda de Usuario o Conductor</title>
+</head>
+
+<body>
+    <h1>Búsqueda de Usuario o Conductor</h1>
+    <form action="" method="post">
+        {% csrf_token %}
+        <div class="card mx-auto" style="width: 30rem;">
+            <div class="card-body">
+                <h5 class="card-title">Búsqueda de Usuario o Conductor</h5>
+                {{ form|crispy }}
+                <button class="btn btn-sm btn-primary float-end" type="submit">Buscar</button>
+            </div>
+        </div>
+    </form>
+    {% if data_returned %}
+    <p>Valor retornado: {{ data_returned }}</p>
+    {% else  %}
+    <p>Valor retornado: tadavia no se ha ingresado un usuario</p>
+    {% endif %}
+
+</body>
+</html>
 
 {% endblock %}
