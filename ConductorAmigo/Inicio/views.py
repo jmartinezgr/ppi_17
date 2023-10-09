@@ -2,13 +2,14 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout, authenticate, login, logout
 from .forms import CustomUserCreationForm
+
 def home(request):
     return render(request, "mainapp/home.html")
 
 def login(request):
     return render(request, "registration/login.html")
 
-@login_required
+#@login_required
 def busqueda(request):
     return render(request, "mainapp/busqueda.html")
 
@@ -33,3 +34,6 @@ def register(request):
 
             return redirect("home")
     return render(request, "registration/register.html", data)
+
+def verificarLicencia(request):
+    return render(request, "mainapp/verificarLicencia.html")
