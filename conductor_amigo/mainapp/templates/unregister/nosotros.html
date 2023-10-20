@@ -1,45 +1,6 @@
 {% extends 'layouts/layout.html' %}
 {% load static %}
 
-{% block navbar %}
-{% if user.is_authenticated %}
-    <li class="nav-item">
-        <a class="nav-link" href={% url "home" %}> Inicio </a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href={% url "nosotros" %}> Nosotros </a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href=''> Viajes Disponibles </a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href=''> Viaje Activo</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href=''> Busqueda</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href=''> Verificar licencia</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href=''> Cerrar Sesion </a>
-    </li>
-{% else %}
-    <li class="nav-item">
-        <a class="nav-link" href={% url "home" %}> Inicio </a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href={% url "nosotros" %}> Nosotros </a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href=''> Ingresar </a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href=''> Registrarse </a>
-    </li>
-{% endif %}
-{% endblock %}
-
 {% block content %}
 <div class="container">
     <h4 class="display-4 mb-4">Sobre Nosotros</h4>
