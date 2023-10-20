@@ -1,4 +1,5 @@
-{% load static %}
+  <!-- Agrega esta línea al principio para cargar la etiqueta static -->
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -12,26 +13,26 @@
     <!-- Barra de navegación personalizada -->    
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
-            <div class="navbar-brand">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="navbar-brand font-italic" href=''> Conductor Amigo </a>
-                    </li>
+            <a class="navbar-brand font-italic" href=''> Conductor Amigo </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
                     {% block navbar %}
 
                     {% endblock %}
-                </ul> 
-            </div>   
-        </div>   
+                </ul>
+            </div>
+        </div>
     </nav>
 
-    <div class="container mt-4">
-        <!-- Contenido específico de la página -->
+    <!-- Contenido específico de la página -->
+    <div class="container mt-4"> <!-- Agregando margen en la parte superior -->
         {% block content %}
-        
+        <!-- Contenido de la página -->
         {% endblock %}
     </div>
-
 
     <!-- Agregar Bootstrap JS y jQuery (opcional) -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
