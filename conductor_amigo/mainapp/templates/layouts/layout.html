@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Conductor Amigo</title>
+    <!-- Agregar Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+</head>
+<body>
+    <!-- Barra de navegación personalizada -->    
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand font-italic" href=''> Conductor Amigo </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href={% url "home" %}> Inicio </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href={% url "nosotros" %}> Nosotros </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href=''> Viajes Disponibles </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href=''> Viaje Activo</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href=''> Busqueda</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href=''> Verificar licencia</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href=''> Cerrar Sesion </a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href={% url "home" %}> Inicio </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href={% url "nosotros" %}> Nosotros </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href=''> Ingresar </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href=''> Registrarse </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido específico de la página -->
+    <div class="container mt-4"> <!-- Agregando margen en la parte superior -->
+        {% block content %}
+        <!-- Contenido de la página -->
+        {% endblock %}
+    </div>
+
+    <!-- Agregar Bootstrap JS y jQuery (opcional) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+</body>
+</html>

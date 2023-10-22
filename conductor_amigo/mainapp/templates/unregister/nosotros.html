@@ -1,0 +1,37 @@
+{% extends 'layouts/layout.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <h4 class="display-4 mb-4">Sobre Nosotros</h4>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <img src="{% static 'images/juan.jpeg' %}" class="card-img-top" alt="Foto de Camilo Echeverri">
+                <div class="card-body">
+                    <h5 class="card-title">Camilo Echeverri</h5>
+                    <p class="card-text">Descripción de Camilo Echeverri.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <img src="{% static 'images/juan.jpeg' %}" class="card-img-top" alt="Foto de Mateo Perez">
+                <div class="card-body">
+                    <h5 class="card-title">Mateo Perez</h5>
+                    <p class="card-text">Descripción de Mateo Perez.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <img src="{% static 'images/juan.jpeg' %}" class="card-img-top" alt="Foto de Juan Jose Martinez">
+                <div class="card-body">
+                    <h5 class="card-title">Juan Jose Martinez</h5>
+                    <p class="card-text">Descripción de Juan Jose Martinez.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
