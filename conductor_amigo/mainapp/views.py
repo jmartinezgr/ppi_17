@@ -23,7 +23,6 @@ def home(request):
     return render(request, "unregister/home.html",context)  
 
 def nosotros(request):
-
     return render(request,'unregister/nosotros.html')
 
 def logout_view(request):

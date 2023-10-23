@@ -4,6 +4,8 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.forms import UserCreationForm
 from .models import Usuario
 from django.core.exceptions import ValidationError
+from django.contrib.auth.forms import AuthenticationForm
+
 
 class UserSearchForm(forms.Form):
     username = forms.CharField(
@@ -109,3 +111,11 @@ class RegistroForm(UserCreationForm):
         if not correo.endswith('@unal.edu.co'):
             raise ValidationError('El correo electrónico debe terminar en @unal.edu.co')
         return correo
+
+class CustomAuthenticationForm(AuthenticationForm):
+    username = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+    )
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+    )
