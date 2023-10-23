@@ -119,3 +119,12 @@ class CustomAuthenticationForm(AuthenticationForm):
     password = forms.CharField(
         widget=forms.PasswordInput(attrs={'class': 'form-control'}),
     )
+
+class LicenseVerificationForm(forms.Form):
+    license_number = forms.CharField(
+        max_length=20,
+        label="Número de Licencia",
+        widget=forms.TextInput(
+            attrs={'class': 'form-control rounded-pill'}
+        )
+    )

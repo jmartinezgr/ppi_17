@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from .forms import UserSearchForm
-from .forms import CustomAuthenticationForm # Importa el formulario personalizado
+from .forms import CustomAuthenticationForm, LicenseVerificationForm# Importa el formulario personalizado
 from django.shortcuts import render,redirect
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
@@ -34,6 +34,10 @@ def usuario_discapacidad(request):
 
     return render(request, 'pasajeros/usuario_discapacidad.html', {'form': form, 'data_returned': data_returned})
 
+def verificar_licencia(request):
+    form = LicenseVerificationForm()
+
+    return render(request,'conductores/verificar_licencia.html',{'form':form})
 
 def login_view(request):
     if request.method == 'POST':
@@ -51,7 +55,7 @@ def login_view(request):
     else:
         form = CustomAuthenticationForm()
     
-    return render(request, 'pasajeros/login.html', {'form': form})
+    return render(request, 'ingreso/login.html', {'form': form})
 def registro_view(request):
     if request.method == 'POST':
         form = RegistroForm(request.POST)
@@ -62,10 +66,10 @@ def registro_view(request):
             messages.success(request, "Tu cuenta ha sido creada. Ahora puedes iniciar sesión.")
             return redirect('login_view')
         else:
-            print(form.errors) 
+            messages.error(request, "Error en el formulario. Tu contraseña no es lo suficientemente segura.") 
     else:
         form = RegistroForm()
-    return render(request, 'pasajeros/registro.html', {'form': form})
+    return render(request, 'ingreso/registro.html', {'form': form})
 
 def privacidad(request):
     return render(request,'pasajeros/privacidad.html')

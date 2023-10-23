@@ -8,5 +8,6 @@ urlpatterns = [
     path("usuario_discapacidad", views.usuario_discapacidad, name="discapacidad"),
     path("login", views.login_view, name="login_view"),
     path('registro/', views.registro_view, name='registro'),
-    path('privacidad/', views.privacidad, name='privacidad')
+    path('privacidad/', views.privacidad, name='privacidad'),
+    path('verficar_licencia',views.verificar_licencia,name='verificar_licencia')
 ]

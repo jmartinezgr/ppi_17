@@ -11,7 +11,7 @@
             <div id="login-error-message" class="alert alert-danger">Su nombre de usuario y contraseña no coinciden. Inténtalo de nuevo.</div>
             {% endif %}
             {% for message in messages %}
-              <div class="alert alert-success">
+              <div class="alert alert-success" id="lolograste" >
                 {{ message }}
               </div>
             {% endfor %}
@@ -36,6 +36,13 @@
     // Ocultar el mensaje de error después de 5 segundos (5000 milisegundos)
     setTimeout(function() {
       var errorMessage = document.getElementById('login-error-message');
+      if (errorMessage) {
+        errorMessage.style.display = 'none';
+      }
+    }, 5000); // 5000 ms = 5 segundos
+
+    setTimeout(function() {
+      var errorMessage = document.getElementById('lolograste');
       if (errorMessage) {
         errorMessage.style.display = 'none';
       }
