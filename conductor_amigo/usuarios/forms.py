@@ -1,5 +1,7 @@
 from django import forms
 from django.shortcuts import render
+from django.contrib.auth.forms import AuthenticationForm
+
 
 class UserSearchForm(forms.Form):
     username = forms.CharField(
@@ -76,8 +78,10 @@ class UserSearchForm(forms.Form):
         else:
             result = f"Usuario validado - Nombre: {username}, Identificación: {identification}"
 
-        #         return render(request, 'result_template.html', {'result': result})
-        # else:
-        #     form = UserSearchForm()
-
-        # return render(request, 'search_template.html', {'form': form})
+class CustomAuthenticationForm(AuthenticationForm):
+    username = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+    )
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+    )

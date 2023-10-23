@@ -37,7 +37,7 @@
                             <a class="nav-link" href=''> Verificar licencia</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href=''> Cerrar Sesion </a>
+                            <a class="nav-link" href={% url "logout_view" %}> Cerrar Sesion </a>
                         </li>
                     {% else %}
                         <li class="nav-item">
@@ -47,7 +47,7 @@
                             <a class="nav-link" href={% url "nosotros" %}> Nosotros </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href=''> Ingresar </a>
+                            <a class="nav-link" href={% url "login_view" %}> Ingresar </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href={% url "registro" %}> Registrarse </a>
