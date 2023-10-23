@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .forms import UserSearchForm
+from .forms import UserSearchForm, LicenseVerificationForm
 
 # Create your views here.
 def buscar_usuario(request):
@@ -26,4 +26,7 @@ def usuario_discapacidad(request):
 
     return render(request, 'pasajeros/usuario_discapacidad.html', {'form': form, 'data_returned': data_returned})
 
+def verificarLicencia(request):
+    form = LicenseVerificationForm()
     
+    return render(request, "conductores/verificar_licencia.html",{'form': form})

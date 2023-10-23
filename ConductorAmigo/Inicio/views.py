@@ -53,7 +53,6 @@ def register(request):
 def verificarLicencia(request):
     return render(request, "mainapp/verificarLicencia.html")
 
-
 def buscar_usuario(request):
     form = UserSearchForm(request.POST)
     data_returned = None

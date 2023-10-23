@@ -81,3 +81,12 @@ class UserSearchForm(forms.Form):
         #     form = UserSearchForm()
 
         # return render(request, 'search_template.html', {'form': form})
+
+class LicenseVerificationForm(forms.Form):
+    license_number = forms.CharField(
+        max_length=20,
+        label="Número de Licencia",
+        widget=forms.TextInput(
+            attrs={'class': 'form-control rounded-pill'}
+        )
+    )
