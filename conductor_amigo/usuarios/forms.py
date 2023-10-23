@@ -1,5 +1,9 @@
 from django import forms
 from django.shortcuts import render
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import UserCreationForm
+from .models import Usuario
+from django.core.exceptions import ValidationError
 
 class UserSearchForm(forms.Form):
     username = forms.CharField(
@@ -80,13 +84,28 @@ class UserSearchForm(forms.Form):
         # else:
         #     form = UserSearchForm()
 
-        # return render(request, 'search_template.html', {'form': form})
+        # return render(request, 'search_template.html', {'form': form}
 
-class LicenseVerificationForm(forms.Form):
-    license_number = forms.CharField(
-        max_length=20,
-        label="Número de Licencia",
-        widget=forms.TextInput(
-            attrs={'class': 'form-control rounded-pill'}
-        )
-    )
+class RegistroForm(UserCreationForm):
+    class Meta:
+        model = Usuario
+        fields = ['username', 'email', 'password1', 'password2', 'nombres', 'apellidos', 'nacimiento', 'direccion', 'rol', 'privacidad']
+
+    def __init__(self, *args, **kwargs):
+        super(RegistroForm, self).__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs.update({'class': 'form-control'})
+        self.fields['email'].widget.attrs.update({'class': 'form-control'})
+        self.fields['password1'].widget.attrs.update({'class': 'form-control'})
+        self.fields['password2'].widget.attrs.update({'class': 'form-control'})
+        self.fields['nombres'].widget.attrs.update({'class': 'form-control'})
+        self.fields['apellidos'].widget.attrs.update({'class': 'form-control'})
+        self.fields['nacimiento'].widget.attrs.update({'class': 'form-control'})
+        self.fields['direccion'].widget.attrs.update({'class': 'form-control'})
+        self.fields['rol'].widget.attrs.update({'class': 'form-control'})
+        self.fields['privacidad'].widget.attrs.update({'class': 'form-control'})
+        
+    def clean_correo(self):
+        correo = self.cleaned_data.get('correo')
+        if not correo.endswith('@unal.edu.co'):
+            raise ValidationError('El correo electrónico debe terminar en @unal.edu.co')
+        return correo
