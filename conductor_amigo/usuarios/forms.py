@@ -1,32 +1,32 @@
+# Este código utiliza funciones y clases proporcionadas por Django para
+# definir formularios de autenticación, búsqueda y registro de usuarios.
+
 from django import forms
-from django.shortcuts import render
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.forms import UserCreationForm
-from .models import Usuario
 from django.core.exceptions import ValidationError
-from django.contrib.auth.forms import AuthenticationForm
+from django.shortcuts import render
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from .models import Usuario
 
 
 class UserSearchForm(forms.Form):
+    """
+    Formulario para buscar usuarios.
+
+    Permite buscar usuarios por nombre de usuario, identificación, tipo de usuario y tipo de discapacidad.
+    """
     username = forms.CharField(
-        max_length=100, required=False, 
-        label="Nombre de Usuario", 
-        widget=forms.TextInput(
-            attrs={
-                'class': 'form-control rounded-pill'
-                }
-            )
-        )
+        max_length=100,
+        required=False,
+        label="Nombre de Usuario",
+        widget=forms.TextInput(attrs={'class': 'form-control rounded-pill'})
+    )
     
     identification = forms.CharField(
-        max_length=20, required=False, 
-        label="Identificación de Usuario", 
-        widget=forms.TextInput(
-            attrs={
-                'class': 'form-control rounded-pill'
-                }
-            )
-        )
+        max_length=20,
+        required=False,
+        label="Identificación de Usuario",
+        widget=forms.TextInput(attrs={'class': 'form-control rounded-pill'})
+    )
     
     USER_TYPE_CHOICES = [
         ('estudiante', 'Estudiante'),
@@ -34,10 +34,10 @@ class UserSearchForm(forms.Form):
     ]
 
     DISABILITY_TYPE_CHOICES = [
-    ('None', "Selecciona una opción"),
-    ('silla de ruedas', 'Silla de ruedas'),
-    ('muletas', 'Muletas'),
-    ('discapacidad auditiva', 'Discapacidad Auditiva'),
+        ('None', "Selecciona una opción"),
+        ('silla de ruedas', 'Silla de ruedas'),
+        ('muletas', 'Muletas'),
+        ('discapacidad auditiva', 'Discapacidad Auditiva'),
     ]
     
     user_type = forms.ChoiceField(
@@ -54,41 +54,45 @@ class UserSearchForm(forms.Form):
         widget=forms.Select(attrs={'class': 'form-control rounded-pill', 'style': 'text-align:center;'})
     )
 
-
     def search(self):
+        """
+        Realiza una búsqueda de usuarios.
+
+        Returns:
+            str: Nombre de usuario buscado.
+        """
         username = self.cleaned_data.get('username')
         identification = self.cleaned_data.get('identification')
         user_type = self.cleaned_data.get('user_type')
 
-        # Aquí puedes realizar la lógica de búsqueda
-        print('Nombre de Usuario:', username)
-        print('Identificación de Usuario:', identification)
-        print('Tipo de Usuario:', user_type)
-
+        # Lógica de búsqueda aquí
         return username
 
     def search_user_disability(self):
+        """
+        Realiza una búsqueda de usuarios con discapacidad.
+
+        Returns:
+            str: Resultado de la búsqueda.
+        """
         result = ""
         username = self.cleaned_data['username']
         identification = self.cleaned_data['identification']
         disability_type = self.cleaned_data.get('disability_type')
 
         # Realiza la validación específica aquí
-
-        # Ejemplo: Validación simple para mostrar un mensaje de éxito
-        
         if disability_type:
             result += f", Tipo de Discapacidad: {disability_type}"
         else:
             result = f"Usuario validado - Nombre: {username}, Identificación: {identification}"
 
-        #         return render(request, 'result_template.html', {'result': result})
-        # else:
-        #     form = UserSearchForm()
-
-        # return render(request, 'search_template.html', {'form': form}
 
 class RegistroForm(UserCreationForm):
+    """
+    Formulario de registro de usuarios.
+
+    Permite registrar nuevos usuarios con información como nombre, correo, contraseña, etc.
+    """
     class Meta:
         model = Usuario
         fields = ['username', 'email', 'password1', 'password2', 'nombres', 'apellidos', 'nacimiento', 'direccion', 'rol', 'privacidad']
@@ -107,12 +111,24 @@ class RegistroForm(UserCreationForm):
         self.fields['privacidad'].widget.attrs.update({'class': 'form-control'})
         
     def clean_correo(self):
+        """
+        Realiza una validación personalizada del correo electrónico.
+
+        Returns:
+            str: Correo electrónico validado.
+        """
         correo = self.cleaned_data.get('correo')
         if not correo.endswith('@unal.edu.co'):
             raise ValidationError('El correo electrónico debe terminar en @unal.edu.co')
         return correo
 
+
 class CustomAuthenticationForm(AuthenticationForm):
+    """
+    Formulario de autenticación personalizado.
+
+    Personaliza el formulario de autenticación de Django para el inicio de sesión.
+    """
     username = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'form-control'}),
     )
@@ -120,11 +136,15 @@ class CustomAuthenticationForm(AuthenticationForm):
         widget=forms.PasswordInput(attrs={'class': 'form-control'}),
     )
 
+
 class LicenseVerificationForm(forms.Form):
+    """
+    Formulario de verificación de licencia de conductor.
+
+    Permite a los conductores verificar su número de licencia.
+    """
     license_number = forms.CharField(
         max_length=20,
         label="Número de Licencia",
-        widget=forms.TextInput(
-            attrs={'class': 'form-control rounded-pill'}
-        )
+        widget=forms.TextInput(attrs={'class': 'form-control rounded-pill'})
     )
