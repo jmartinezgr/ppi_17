@@ -1,4 +1,5 @@
 from django import forms
+from django.shortcuts import render
 
 class UserSearchForm(forms.Form):
     username = forms.CharField(
@@ -25,6 +26,13 @@ class UserSearchForm(forms.Form):
         ('estudiante', 'Estudiante'),
         ('conductor', 'Conductor'),
     ]
+
+    DISABILITY_TYPE_CHOICES = [
+    ('None', "Selecciona una opción"),
+    ('silla de ruedas', 'Silla de ruedas'),
+    ('muletas', 'Muletas'),
+    ('discapacidad auditiva', 'Discapacidad Auditiva'),
+    ]
     
     user_type = forms.ChoiceField(
         choices=USER_TYPE_CHOICES,
@@ -32,6 +40,14 @@ class UserSearchForm(forms.Form):
         label="Tipo de Usuario",
         widget=forms.Select(attrs={'class': 'form-control rounded-pill', 'style': 'text-align:center;'})
     )
+
+    disability_type = forms.ChoiceField(
+        choices=DISABILITY_TYPE_CHOICES,
+        required=False,
+        label="Tipo de Discapacidad",
+        widget=forms.Select(attrs={'class': 'form-control rounded-pill', 'style': 'text-align:center;'})
+    )
+
 
     def search(self):
         username = self.cleaned_data.get('username')
@@ -44,3 +60,24 @@ class UserSearchForm(forms.Form):
         print('Tipo de Usuario:', user_type)
 
         return username
+
+    def search_user_disability(self):
+        result = ""
+        username = self.cleaned_data['username']
+        identification = self.cleaned_data['identification']
+        disability_type = self.cleaned_data.get('disability_type')
+
+        # Realiza la validación específica aquí
+
+        # Ejemplo: Validación simple para mostrar un mensaje de éxito
+        
+        if disability_type:
+            result += f", Tipo de Discapacidad: {disability_type}"
+        else:
+            result = f"Usuario validado - Nombre: {username}, Identificación: {identification}"
+
+        #         return render(request, 'result_template.html', {'result': result})
+        # else:
+        #     form = UserSearchForm()
+
+        # return render(request, 'search_template.html', {'form': form})
