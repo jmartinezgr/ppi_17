@@ -4,9 +4,10 @@
 from django.shortcuts import render, redirect
 from .forms import UserSearchForm, CustomAuthenticationForm, LicenseVerificationForm, RegistroForm
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 
+@login_required
 def buscar_usuario(request):
     """
     Vista para buscar usuarios y mostrar los resultados.
@@ -49,6 +50,7 @@ def usuario_discapacidad(request):
 
     return render(request, 'pasajeros/usuario_discapacidad.html', {'form': form, 'data_returned': data_returned})
 
+@login_required
 def verificar_licencia(request):
     """
     Vista para verificar la licencia de un conductor.
@@ -127,6 +129,7 @@ def privacidad(request):
     """
     return render(request, 'pasajeros/privacidad.html')
 
+@login_required
 def detalle_viaje(request):
     """
     Vista para mostrar detalles de un viaje.
@@ -151,6 +154,7 @@ def detalle_viaje(request):
     context = {'viaje': viaje}
     return render(request, 'conductores/viaje.html', context)
 
+@login_required
 def lista_viajes(request):
     """
     Vista para mostrar una lista de viajes.
