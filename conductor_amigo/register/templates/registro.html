@@ -1,0 +1,23 @@
+{% extends 'layouts/layout.html' %}
+
+{% block content %}
+
+<form method="post" action="{% url 'registro' %}">
+  {% csrf_token %}
+
+  <div class="card mx-auto" style="width: 30rem;">
+    <div class="card-body">
+      <h5 class="card-title">Ingrese sus datos</h5>
+      {{ form.as_p }}
+
+      <a href={% url "home" %} class="card-link">Inicio</a>
+      <a href="#" class="card-link">Iniciar sesion</a>
+      <button class="btn btn-sm btn-prymary float-end" type="submit">Registrarse</button>
+
+  </div>
+</form>
+<p>
+  Al hacer clic en "Registrarse", aceptas nuestras
+  <a href={% url "privacidad" %}>políticas de privacidad</a>.
+</p>
+{% endblock %}
