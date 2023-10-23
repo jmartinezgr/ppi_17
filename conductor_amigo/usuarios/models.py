@@ -33,11 +33,11 @@ class UsuarioManager(BaseUserManager):
         return superuser
 
 class Usuario(AbstractBaseUser):
-    username = models.CharField('Nombre de usuario', unique=True, max_length=100, default='nombre_de_usuario')
+    username = models.CharField('Nombre de usuario', unique=True, max_length=100)
     nombres = models.CharField('Nombres', max_length=200, blank=True)
     apellidos = models.CharField('Apellidos', max_length=200, blank=True)
-    nacimiento = models.DateField('Fecha de Nacimiento', default="2000-01-01")
-    email = models.EmailField('Correo Electronico', max_length=254, unique=True, null=False, default='correo@ejemplo.com')
+    nacimiento = models.DateField('Fecha de Nacimiento')
+    email = models.EmailField('Correo Electronico', max_length=254, unique=True, null=False)
     direccion = models.CharField('Direccion', max_length=200, blank=True)
     usuario_administrador = models.BooleanField(default=False)
     foto_usuario = models.ImageField('Foto de Usuario', upload_to='user_photos/perfil/', blank=True)
@@ -45,13 +45,14 @@ class Usuario(AbstractBaseUser):
     foto_licencia_conducir = models.ImageField('Foto de Licencia de Conducir', upload_to='user_photos/licencia/', blank=True)
     rol = models.ForeignKey("usuarios.Role", verbose_name=("Rol"), on_delete=models.CASCADE, default=1)
     is_superuser = models.BooleanField(default=False)
+    privacidad = models.BooleanField('Acepta politicas de privacidad', default=False)
 
     USERNAME_FIELD = username
 
     objects = UsuarioManager()
 
     USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['email', 'nombres', 'apellidos']
+    REQUIRED_FIELDS = ['email', 'nombres', 'apellidos', 'privacidad']
 
     def __str__(self):
         return f'Usuario: {self.nombres} {self.apellidos}'
