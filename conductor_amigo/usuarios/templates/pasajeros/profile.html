@@ -1,0 +1,32 @@
+{% extends 'layouts/layout.html' %}
+{% block content %}
+
+<!-- Estilos adicionales para la página de perfil -->
+<style>
+    .profile {
+        text-align: center;
+        margin-top: 50px;
+    }
+
+    .circular-img {
+        border-radius: 40%;
+        overflow: hidden;
+        width: 120px; 
+        height: 120px; 
+        margin: 0 auto; 
+    }
+</style>
+
+<!-- Contenido específico de la página de perfil -->
+<div class="profile">
+    <!-- Contenedor circular para la imagen de perfil -->
+    <div class="circular-img">
+        <!-- Imagen de perfil del usuario -->
+        <img src="{{ user.foto_usuario.url }}" alt="Foto de perfil">
+    </div>
+    
+    <!-- Nombre de usuario del perfil -->
+    <h2>{{ user.username }}</h2>
+</div>
+
+{% endblock %}

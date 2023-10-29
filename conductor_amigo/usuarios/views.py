@@ -242,3 +242,22 @@ def lista_viajes(request):
 
     context = {'viajes': viajes}
     return render(request, 'pasajeros/lista_viajes.html', context)
+
+def profile(request, username=None):
+    """
+    Muestra el perfil del usuario actual o del usuario especificado.
+
+    Args:
+        request (HttpRequest): La solicitud HTTP recibida.
+        username (str, opcional): El nombre de usuario del usuario cuyo perfil se va a mostrar.
+            Si no se proporciona, se mostrará el perfil del usuario actual.
+
+    Returns:
+        HttpResponse: Renderiza la página de perfil del usuario.
+    """
+    current_user = request.user
+    if username and username != current_user.username:
+        user = Usuario.object.get(username=username)
+    else:
+        user = current_user
+    return render(request, 'pasajeros/profile.html', {'user': user})
