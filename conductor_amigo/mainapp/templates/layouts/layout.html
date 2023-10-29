@@ -35,22 +35,23 @@
                             <a class="nav-link" href={% url "home" %}> Inicio </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'profile' username=user.username %}"> Mi perfil </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href={% url "nosotros" %}> Nosotros </a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link" href={% url "lista_viajes" %}> Viajes Disponibles </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href={% url "detalle_viaje" %}> Viaje Activo</a>
                         </li>
-                        <li class "nav-item">
-                            <a class="nav-link" href={% url "busqueda" %}> Búsqueda</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="funcionalidadesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Funcionalidades
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="funcionalidadesDropdown">
+                                <a class="dropdown-item" href={% url "nosotros" %}> Nosotros </a>
+                                <a class="dropdown-item" href={% url "busqueda" %}> Búsqueda </a>
+                                <a class="dropdown-item" href={% url "verificar_licencia" %}> Verificar licencia </a>
+                            </div>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href={% url "verificar_licencia" %}> Verificar licencia</a>
+                            <a class="nav-link" href="{% url 'profile' username=user.username %}"> Mi perfil </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href={% url "logout_view" %}> Cerrar Sesión </a>
