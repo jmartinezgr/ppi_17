@@ -134,7 +134,7 @@ def registro_estudiante(request):
         form = RegistroEstudianteForm(request.POST, request.FILES)
         if form.is_valid():
             user = form.save(commit=False)
-            user.rol = Role.objects.get(name="Pasajeros")
+            user.rol = Role.objects.get(name="Pasajero")
 
             if user.foto_usuario:
                 for file, field_name in [(user.foto_carnet, 'foto_carnet'), (user.foto_usuario, 'foto_usuario')]:
