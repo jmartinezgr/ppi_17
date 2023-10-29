@@ -95,15 +95,34 @@ def login_view(request):
     return render(request, 'ingreso/login.html', {'form': form})
 
 def registro_inicial(request):
-    return render(request,'ingreso/registro_inicial.html')
+    """
+    Vista para la página de registro inicial.
+
+    Args:
+        request: Solicitud HTTP enviada por el cliente.
+
+    Returns:
+        Renderiza la plantilla 'ingreso/registro_inicial.html' para el registro inicial.
+    """
+    return render(request, 'ingreso/registro_inicial.html')
 
 def registro_conductor(request):
+    """
+    Vista para el registro de conductores.
+
+    Args:
+        request: Solicitud HTTP enviada por el cliente.
+
+    Returns:
+        Renderiza la plantilla 'ingreso/registro_conductor.html' con el formulario de registro de conductores.
+    """
     if request.method == 'POST':
         form = RegistroConductorForm(request.POST, request.FILES)
         if form.is_valid():
             user = form.save(commit=False)
             user.rol = Role.objects.get(name="Conductor")
             
+            # Verifica y valida las imágenes subidas
             for file, field_name in [(user.foto_carnet, 'foto_carnet'), (user.foto_licencia_conducir, 'foto_licencia_conducir'), (user.foto_usuario, 'foto_usuario')]:
                 if user.foto_usuario and not file.name.lower().endswith('.png'):
                     form.add_error(field_name, "Por favor, sube solo archivos PNG.")
@@ -130,12 +149,22 @@ def registro_conductor(request):
     return render(request, 'ingreso/registro_conductor.html', {'form': form})
 
 def registro_estudiante(request):
+    """
+    Vista para el registro de estudiantes.
+
+    Args:
+        request: Solicitud HTTP enviada por el cliente.
+
+    Returns:
+        Renderiza la plantilla 'ingreso/registro_estudiante.html' con el formulario de registro de estudiantes.
+    """
     if request.method == 'POST':
         form = RegistroEstudianteForm(request.POST, request.FILES)
         if form.is_valid():
             user = form.save(commit=False)
             user.rol = Role.objects.get(name="Pasajero")
 
+            # Verifica y valida las imágenes subidas
             if user.foto_usuario:
                 for file, field_name in [(user.foto_carnet, 'foto_carnet'), (user.foto_usuario, 'foto_usuario')]:
                     if not file.name.lower().endswith('.png'):
@@ -157,11 +186,12 @@ def registro_estudiante(request):
             elif 'password2' in form.errors:
                 messages.error(request, "Contraseña no es suficientemente segura. Prueba agregar diferentes tipos de caracteres.")
             elif 'foto_carnet' in form.errors:
-                messages.error(request, "Por favor, sube una imagen PNG como foto de tu carnet.")
+                messages.error(request, "Por favor, sube una imagen PNG como foto de tu carnet")
     else:
         form = RegistroEstudianteForm()
 
     return render(request, 'ingreso/registro_estudiante.html', {'form': form})
+
 
 
 def privacidad(request):
