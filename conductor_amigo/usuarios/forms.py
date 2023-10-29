@@ -2,8 +2,6 @@
 # definir formularios de autenticación, búsqueda y registro de usuarios.
 
 from django import forms
-from django.core.exceptions import ValidationError
-from django.shortcuts import render
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from .models import Usuario
 
