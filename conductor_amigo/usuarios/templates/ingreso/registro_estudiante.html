@@ -1,0 +1,113 @@
+{% extends 'layouts/layout.html' %}
+
+{% block content %}
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-10">
+        <div class="card" style="margin-top: 30px;">
+          <div class="card-header text-center">Registro como Estudiante</div>
+          <div class="card-body">
+            {% for message in messages %}
+              <div class="alert alert-danger" id="Errocito">
+                {{ message }}
+              </div>
+            {% endfor %}
+            <form method="post" enctype="multipart/form-data">
+              {% csrf_token %}
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    {{ form.username.label_tag }}
+                    {{ form.username }}
+                  </div>
+                  <div class="form-group">
+                    {{ form.email.label_tag }}
+                    {{ form.email }}
+                  </div>
+                  <div class="form-group">
+                    {{ form.nombres.label_tag }}
+                    {{ form.nombres }}
+                  </div>
+                  <div class="form-group">
+                    {{ form.apellidos.label_tag }}
+                    {{ form.apellidos }}
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    {{ form.nacimiento.label_tag }}
+                    {{ form.nacimiento }}
+                  </div>
+                  <div class="form-group">
+                    {{ form.direccion.label_tag }}
+                    {{ form.direccion }}
+                  </div>
+                  <div class="form-group">
+                    {{ form.password1.label_tag }}
+                    {{ form.password1 }}
+                  </div>
+                  <div class="form-group">
+                    {{ form.password2.label_tag }}
+                    {{ form.password2 }}
+                  </div>
+                </div>
+                <div class="col-md-4 d-flex flex-column">
+                  <div class="form-group">
+                    {{ form.foto_carnet.label_tag }}
+                    <div class="custom-file">
+                      {{ form.foto_carnet }}
+                      <label class="custom-file-label" for="{{ form.foto_carnet.id_for_label }}" accept=".png">Seleccionar archivo PNG</label>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    {{ form.foto_usuario.label_tag }}
+                    <div class="custom-file">
+                      {{ form.foto_usuario }}
+                      <label class="custom-file-label" for="{{ form.foto_usuario.id_for_label }}" accept=".png">Seleccionar archivo PNG</label>
+                    </div>
+                  </div>
+                  <div class="form-group" style="margin-top: 8px;">
+                    <label class="custom-control custom-checkbox" style="margin: 0; font-size: 13px;">
+                      {{ form.privacidad }}
+                      Acepto las <a href="{% url 'privacidad' %}" style="font-size: 13px;">políticas de privacidad</a>
+                    </label>
+                    <button type="submit" class="btn btn-primary rounded-pill" style="width: 100%; margin-top: 1px;">Registrarse</button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    setTimeout(function () {
+      var errorMessage = document.getElementById("Errocito");
+      if (errorMessage) {
+        errorMessage.style.display = "none";
+      }
+    }, 4000);
+    
+    // Script para actualizar el nombre del archivo seleccionado
+    document.getElementById("id_foto_carnet").addEventListener("change", function() {
+      updateFileName(this);
+    });
+    document.getElementById("id_foto_usuario").addEventListener("change", function() {
+      updateFileName(this);
+    });
+
+    function updateFileName(input) {
+      const label = input.nextElementSibling;  // Obtiene el elemento label adyacente
+      if (input.files.length > 0) {
+        const fileName = input.files[0].name;
+        label.innerHTML = fileName.length > 9 ? fileName.substring(0, 9) + '...' : fileName;  // Muestra los primeros 9 caracteres y agrega "..." si es mayor
+        label.classList.add('selected-file');  // Aplica una clase CSS para cambiar el estilo
+      } else {
+        label.innerHTML = 'Seleccionar archivo PNG';
+        label.classList.remove('selected-file');
+      }
+    }
+  </script>
+{% endblock %}

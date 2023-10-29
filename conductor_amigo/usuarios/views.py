@@ -2,7 +2,7 @@
 # Contiene vistas y funcionalidades relacionadas con la gestión de usuarios y viajes.
 
 from django.shortcuts import render, redirect
-from .forms import UserSearchForm, CustomAuthenticationForm, LicenseVerificationForm, RegistroForm, RegistroConductorForm, RegistroEstudianteForm
+from .forms import UserSearchForm, CustomAuthenticationForm, LicenseVerificationForm,RegistroConductorForm, RegistroEstudianteForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
@@ -94,31 +94,6 @@ def login_view(request):
     
     return render(request, 'ingreso/login.html', {'form': form})
 
-def registro_view(request):
-    """
-    Vista para el registro de usuarios.
-
-    Args:
-        request: Solicitud HTTP enviada por el cliente.
-
-    Returns:
-        Renderiza la plantilla 'ingreso/registro.html' con el formulario de registro.
-    """
-    if request.method == 'POST':
-        form = RegistroForm(request.POST)
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.set_password(form.cleaned_data['password1'])
-            user.save()
-            messages.success(request, "Tu cuenta ha sido creada. Ahora puedes iniciar sesión.")
-            return redirect('login_view')
-        else:
-            messages.error(request, "Error en el formulario. Tu contraseña no es lo suficientemente segura.") 
-    else:
-        form = RegistroForm()
-    
-    return render(request, 'ingreso/registro.html', {'form': form})
-
 def registro_inicial(request):
     return render(request,'ingreso/registro_inicial.html')
 
@@ -132,9 +107,11 @@ def registro_conductor(request):
             for file, field_name in [(user.foto_carnet, 'foto_carnet'), (user.foto_licencia_conducir, 'foto_licencia_conducir'), (user.foto_usuario, 'foto_usuario')]:
                 if user.foto_usuario and not file.name.lower().endswith('.png'):
                     form.add_error(field_name, "Por favor, sube solo archivos PNG.")
+                    messages.error(request, "Por favor, sube solo archivos PNG.")
                     return render(request, 'ingreso/registro_conductor.html', {'form': form})
                 elif not user.foto_usuario and not file.name.lower().endswith('.png'):
                     form.add_error(field_name, "Por favor, sube solo archivos PNG.")
+                    messages.error(request, "Por favor, sube solo archivos PNG.")                   
                     return render(request, 'ingreso/registro_conductor.html', {'form': form})
             
             user.save()
@@ -152,6 +129,39 @@ def registro_conductor(request):
 
     return render(request, 'ingreso/registro_conductor.html', {'form': form})
 
+def registro_estudiante(request):
+    if request.method == 'POST':
+        form = RegistroEstudianteForm(request.POST, request.FILES)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.rol = Role.objects.get(name="Pasajeros")
+
+            if user.foto_usuario:
+                for file, field_name in [(user.foto_carnet, 'foto_carnet'), (user.foto_usuario, 'foto_usuario')]:
+                    if not file.name.lower().endswith('.png'):
+                        form.add_error(field_name, "Por favor, sube solo archivos PNG.")
+                        messages.error(request, "Por favor, sube solo archivos PNG.")                        
+                        return render(request, 'ingreso/registro_estudiante.html', {'form': form})
+            else:
+                for file, field_name in [(user.foto_carnet, 'foto_carnet')]:
+                    if not file.name.lower().endswith('.png'):
+                        form.add_error(field_name, "Por favor, sube solo archivos PNG.")
+                        messages.error(request, "Por favor, sube solo archivos PNG.")   
+                        return render(request, 'ingreso/registro_estudiante.html', {'form': form})
+            user.save()
+            messages.success(request, "Tu cuenta de estudiante ha sido creada. Ahora puedes iniciar sesión.")
+            return redirect('login_view')
+        else:
+            if 'username' in form.errors:
+                messages.error(request, "Nombre de usuario ya existe.")
+            elif 'password2' in form.errors:
+                messages.error(request, "Contraseña no es suficientemente segura. Prueba agregar diferentes tipos de caracteres.")
+            elif 'foto_carnet' in form.errors:
+                messages.error(request, "Por favor, sube una imagen PNG como foto de tu carnet.")
+    else:
+        form = RegistroEstudianteForm()
+
+    return render(request, 'ingreso/registro_estudiante.html', {'form': form})
 
 
 def privacidad(request):
