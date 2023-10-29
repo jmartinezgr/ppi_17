@@ -1,23 +1,36 @@
+<!--
+ 
+    Este codigo de html5 es el layout principal de la pagina de conductor amigo, es la estructura html que siempre se carga en la app, 
+    que haciendo uso de los bloques de contenido proporcionado para los templates de django, aplicacion y framework de desarrollo web de
+    uso publico, se usa para reutilizar codigo html y hacer cargados de paginas contextuales.
+
+-->
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Conductor Amigo</title>
-    <!-- Agregar Bootstrap CSS -->
+    <!-- 
+        Carga de Bootstrap 4.5 CSS para estilizar la página web 
+        Bootstrap es una aplicacion de maquetacion de estilos gratiuta, reduce arduamente las lineas de codigo necesarias para estilar codigo
+        html, estilando de manera estandar los elementos html dispoibles en cualquier aplicacion. Este es un framework de codigo abierto que puede
+        ser usado de manera comun en cualquier pagina, y permite el enfoque en desarrollos de backend facilitando el desarrollo del front
+    -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
 </head>
 <body>
-    <!-- Barra de navegación personalizada -->    
+    <!-- Layout principal de la página web, donde se cargarán los demás templates usando Django -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
-            <a class="navbar-brand font-italic"href={% url "home" %}> Conductor Amigo </a>
+            <a class="navbar-brand font-italic" href={% url "home" %}> Conductor Amigo </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ml-auto">
                     {% if user.is_authenticated %}
+                        <!-- Menú de navegación para usuarios autenticados -->
                         <li class="nav-item">
                             <a class="nav-link" href={% url "home" %}> Inicio </a>
                         </li>
@@ -30,16 +43,17 @@
                         <li class="nav-item">
                             <a class="nav-link" href={% url "detalle_viaje" %}> Viaje Activo</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href={% url "busqueda" %}> Busqueda</a>
+                        <li class "nav-item">
+                            <a class="nav-link" href={% url "busqueda" %}> Búsqueda</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href={% url "verificar_licencia" %}> Verificar licencia</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href={% url "logout_view" %}> Cerrar Sesion </a>
+                            <a class="nav-link" href={% url "logout_view" %}> Cerrar Sesión </a>
                         </li>
                     {% else %}
+                        <!-- Menú de navegación para usuarios no autenticados -->
                         <li class="nav-item">
                             <a class="nav-link" href={% url "home" %}> Inicio </a>
                         </li>
@@ -52,7 +66,6 @@
                         <li class="nav-item">
                             <a class="nav-link" href={% url "registro_inicial" %}> Registrarse </a>
                         </li>
-
                     {% endif %}
                 </ul>
             </div>
@@ -66,9 +79,16 @@
         {% endblock %}
     </div>
 
-    <!-- Agregar Bootstrap JS y jQuery (opcional) -->
+    <!-- Carga de Bootstrap 4.5 JS y jQuery (opcional) para agregar interactividad a la página -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+
+    <!--
+ 
+        En las estiquetas "script" se hace la conexcion de las librerias de javascript que usa Bootstrap para encargarse del desarollo responsive
+        de los estilos css proporcionado por la libreria, permitiendo que la aplicacion pueda ser usada en cualquier dispositivo.
+
+    -->
 </body>
 </html>
