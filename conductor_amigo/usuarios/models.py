@@ -88,13 +88,13 @@ class Usuario(AbstractBaseUser):
     direccion = models.CharField('Dirección', max_length=200, blank=True)
     usuario_administrador = models.BooleanField(default=False)
     foto_usuario = models.ImageField('Foto de Usuario', 
-                                     upload_to='user_photos/perfil/', 
+                                     upload_to='perfil/', 
                                      blank=True)
     foto_carnet = models.ImageField('Foto de Carnet', 
-                                    upload_to='user_photos/carnet/', 
+                                    upload_to='carnet/', 
                                     blank=True)
     foto_licencia_conducir = models.ImageField('Foto de Licencia de Conducir', 
-                                               upload_to='user_photos/licencia/', 
+                                               upload_to='licencia/', 
                                                blank=True)
     rol = models.ForeignKey("usuarios.Role", 
                             verbose_name=("Rol"), 

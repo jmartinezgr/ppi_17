@@ -107,7 +107,6 @@ class RegistroForm(UserCreationForm):
         self.fields['apellidos'].widget.attrs.update({'class': 'form-control'})
         self.fields['nacimiento'].widget.attrs.update({'class': 'form-control'})
         self.fields['direccion'].widget.attrs.update({'class': 'form-control'})
-        self.fields['rol'].widget.attrs.update({'class': 'form-control'})
         self.fields['privacidad'].widget.attrs.update({'class': 'form-control'})
         
     def clean_correo(self):
@@ -121,6 +120,47 @@ class RegistroForm(UserCreationForm):
         if not correo.endswith('@unal.edu.co'):
             raise ValidationError('El correo electrónico debe terminar en @unal.edu.co')
         return correo
+
+class RegistroConductorForm(UserCreationForm):
+    foto_carnet = forms.ImageField(
+        required=False,
+        help_text='Sube una imagen PNG de tu carné de conductor.'
+    )
+    foto_licencia_conducir = forms.ImageField(
+        required=False,
+        help_text='Sube una imagen PNG de tu licencia de conducir.'
+    )
+    foto_usuario = forms.ImageField(
+        required=False,
+        help_text='Sube una imagen PNG de tu perfil.'
+    )
+    
+    class Meta:
+        model = Usuario
+        fields = ['username', 'email', 'password1', 'password2', 'nombres', 'apellidos', 'nacimiento', 'direccion', 'privacidad', 'foto_carnet', 'foto_licencia_conducir', 'foto_usuario']
+    def __init__(self, *args, **kwargs):
+        super(RegistroConductorForm, self).__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs.update({'class': 'form-control'})
+        self.fields['email'].widget.attrs.update({'class': 'form-control'})
+        self.fields['password1'].widget.attrs.update({'class': 'form-control'})
+        self.fields['password2'].widget.attrs.update({'class': 'form-control'})
+        self.fields['nombres'].widget.attrs.update({'class': 'form-control'})
+        self.fields['apellidos'].widget.attrs.update({'class': 'form-control'})
+        self.fields['nacimiento'].widget.attrs.update({'class': 'form-control'})
+        self.fields['direccion'].widget.attrs.update({'class': 'form-control'})
+        self.fields['privacidad'].widget.attrs.update()
+        self.fields['foto_carnet'].widget.attrs.update({'class': 'custom-file-input'})
+        self.fields['foto_licencia_conducir'].widget.attrs.update({'class': 'custom-file-input'})
+        self.fields['foto_usuario'].widget.attrs.update({'class': 'custom-file-input'})
+
+class RegistroEstudianteForm(RegistroForm):
+    class Meta:
+        model = Usuario
+        fields = ['username', 'email', 'password1', 'password2', 'nombres', 'apellidos', 'nacimiento', 'direccion', 'privacidad', 'foto_carnet']
+        
+    def __init__(self, *args, **kwargs):
+        super(RegistroEstudianteForm, self).__init__(*args, **kwargs)
+        self.fields['foto_carnet'].widget.attrs.update({'class': 'form-control'})
 
 
 class CustomAuthenticationForm(AuthenticationForm):
