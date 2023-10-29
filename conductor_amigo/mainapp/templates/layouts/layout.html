@@ -22,7 +22,7 @@
                             <a class="nav-link" href={% url "home" %}> Inicio </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href={% url "profile" %}> Mi perfil </a>
+                            <a class="nav-link" href="{% url 'profile' username=user.username %}"> Mi perfil </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href={% url "nosotros" %}> Nosotros </a>
