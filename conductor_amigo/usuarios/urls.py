@@ -18,4 +18,8 @@ urlpatterns = [
     path('lista_viajes/', views.lista_viajes, name='lista_viajes'),
     path("viaje/",views.detalle_viaje, name="detalle_viaje"),
     path('profile/<str:username>/', views.profile, name='profile'),
+    path("rutas_similares", views.ingresar_coordenada, name='rutas_similares'),
+    path("Usuario Discapacidad", views.usuario_discapacidad, name='usuario_discapacidad')
+
+
 ]
