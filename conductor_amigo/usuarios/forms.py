@@ -97,7 +97,11 @@ class RegistroConductorForm(UserCreationForm):
         required=False,
         help_text='Sube una imagen PNG de tu perfil.'
     )
-    
+    nacimiento = forms.DateField(
+        label="Fecha de Nacimiento",
+        widget=forms.TextInput(attrs={'class': 'form-control', 'type': 'date'})
+    )
+
     class Meta:
         model = Usuario
         fields = ['username', 'email', 'password1', 'password2', 'nombres', 'apellidos', 'nacimiento', 'direccion', 'privacidad', 'foto_carnet', 'foto_licencia_conducir', 'foto_usuario']
@@ -109,7 +113,7 @@ class RegistroConductorForm(UserCreationForm):
         self.fields['password2'].widget.attrs.update({'class': 'form-control'})
         self.fields['nombres'].widget.attrs.update({'class': 'form-control'})
         self.fields['apellidos'].widget.attrs.update({'class': 'form-control'})
-        self.fields['nacimiento'].widget.attrs.update({'class': 'form-control'})
+        self.fields['nacimiento'].widget.attrs.update({'class': 'form-control', 'type': 'date'})
         self.fields['direccion'].widget.attrs.update({'class': 'form-control'})
         self.fields['privacidad'].widget.attrs.update()
         self.fields['foto_carnet'].widget.attrs.update({'class': 'custom-file-input'})
@@ -131,6 +135,11 @@ class RegistroEstudianteForm(UserCreationForm):
         model = Usuario
         fields = ['username', 'email', 'password1', 'password2', 'nombres', 'apellidos', 'nacimiento', 'direccion', 'privacidad', 'foto_usuario','foto_carnet']
 
+    nacimiento = forms.DateField(
+        label="Fecha de Nacimiento",
+        widget=forms.TextInput(attrs={'class': 'form-control', 'type': 'date'})
+    )
+    
     def __init__(self, *args, **kwargs):
         super(RegistroEstudianteForm, self).__init__(*args, **kwargs)
         self.fields['username'].widget.attrs.update({'class': 'form-control'})
@@ -139,7 +148,7 @@ class RegistroEstudianteForm(UserCreationForm):
         self.fields['password2'].widget.attrs.update({'class': 'form-control'})
         self.fields['nombres'].widget.attrs.update({'class': 'form-control'})
         self.fields['apellidos'].widget.attrs.update({'class': 'form-control'})
-        self.fields['nacimiento'].widget.attrs.update({'class': 'form-control'})
+        self.fields['nacimiento'].widget.attrs.update({'class': 'form-control', 'type': 'date'})
         self.fields['direccion'].widget.attrs.update({'class': 'form-control'})
         self.fields['privacidad'].widget.attrs.update()
         self.fields['foto_carnet'].widget.attrs.update({'class': 'custom-file-input'})
