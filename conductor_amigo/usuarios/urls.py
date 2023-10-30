@@ -17,5 +17,5 @@ urlpatterns = [
     path('verficar_licencia/',views.verificar_licencia,name='verificar_licencia'),
     path('lista_viajes/', views.lista_viajes, name='lista_viajes'),
     path("viaje/",views.detalle_viaje, name="detalle_viaje"),
-    path('profile/<str:username>/', views.profile, name='profile'),
+    path('<str:username>/', views.profile, name='profile'),
 ]
