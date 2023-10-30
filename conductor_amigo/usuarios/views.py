@@ -2,11 +2,13 @@
 # Contiene vistas y funcionalidades relacionadas con la gestión de usuarios y viajes.
 
 from django.shortcuts import render, redirect
-from .forms import UserSearchForm, CustomAuthenticationForm, LicenseVerificationForm,RegistroConductorForm, RegistroEstudianteForm
+from .forms import UserSearchForm, CustomAuthenticationForm, LicenseVerificationForm,RegistroConductorForm, RegistroEstudianteForm, CoordenadaForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from .models import Role,Usuario
+#importa la funcion calcularDistancia de la carpeta utils
+from utils.calcular_distancia import calcularDistacia
 import json
 
 @login_required
@@ -291,3 +293,32 @@ def profile(request, username=None):
     else:
         user = current_user
     return render(request, 'pasajeros/profile.html', {'user': user})
+
+def ingresar_coordenada(request):
+    # Inicializa la variable que contendrá el resultado
+    data_ret = None
+
+    if request.method == 'POST':
+        # Crea un formulario a partir de los datos POST
+        form = CoordenadaForm(request.POST)
+
+        if form.is_valid():
+            # Procesa los datos si el formulario es válido
+            latitud = float(form.cleaned_data['latitud'])  # Lee la latitud como un float
+            longitud = float(form.cleaned_data['longitud'])  # Lee la longitud como un float
+            coord_user = (latitud, longitud)
+            coord_temp = (6.269377072694449, -75.56589311873437)
+
+            # Calcula la distancia usando las coordenadas del usuario y las coordenadas temporales
+            data_ret = calcularDistacia(coord_user, coord_temp)
+
+        else:
+            # El formulario no es válido, maneja los errores si es necesario
+            pass
+    else:
+        # Si no es una solicitud POST, crea un formulario vacío
+        form = CoordenadaForm()
+
+    # Renderiza la plantilla 'rutas_similares.html' con el formulario y el resultado
+    return render(request, 'pasajeros/rutas_similares.html', {'form': form, 'data_ret': data_ret })
+
