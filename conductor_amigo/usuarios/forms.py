@@ -180,3 +180,42 @@ class LicenseVerificationForm(forms.Form):
         label="Número de Licencia",
         widget=forms.TextInput(attrs={'class': 'form-control rounded-pill'})
     )
+
+class CoordenadaForm(forms.Form):
+
+    username = forms.CharField(
+        max_length=100,
+        required=False,
+        label="Nombre de Usuario",
+        widget=forms.TextInput(attrs={'class': 'form-control rounded-pill'})
+    )
+
+    latitud = forms.FloatField(
+        label='Latitud', 
+        min_value=-90, 
+        max_value=90,
+        widget=forms.TextInput(attrs={'class': 'form-control rounded-pill w-300'})
+        
+        )
+    
+    longitud = forms.FloatField(
+        label='Longitud', 
+        min_value=-180, 
+        max_value=180,
+        widget=forms.TextInput(attrs={'class': 'form-control rounded-pill w-300'})
+        )
+        
+
+    STARTING_PLACE_CHOICES = [
+        ('None', "Selecciona una opción"),
+        ((6.274890555791106, -75.59260007530374), 'Facultad de Minas'),
+        ((6.261636531014708, -75.5771425311259), 'Sede Volador'),
+        ((6.263790822214914, -75.57467489867656), 'Sede Rio'),
+    ]
+
+    starting_place_type = forms.ChoiceField(
+        choices=STARTING_PLACE_CHOICES,
+        required=False,
+        label="Lugar de partida",
+        widget=forms.Select(attrs={'class': 'form-control rounded-pill', 'style': 'text-align:center;'})
+    )
