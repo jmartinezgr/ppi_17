@@ -3,6 +3,7 @@
 # personalizados para gestionar usuarios y sus roles.
 
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.contrib.auth.hashers import make_password
 
@@ -13,7 +14,8 @@ class UsuarioManager(BaseUserManager):
 
     Este manager permite crear usuarios regulares y superusuarios.
     """
-    def create_user(self, username, email, password=None, **extra_fields):
+
+    def create_user(self, username, email, password=None, incapacidad='ninguna', bibliografia='', calificacion=3, **extra_fields):
         """
         Crea y guarda un usuario regular.
 
@@ -21,6 +23,9 @@ class UsuarioManager(BaseUserManager):
             username (str): Nombre de usuario.
             email (str): Correo electrónico del usuario.
             password (str): Contraseña del usuario (opcional).
+            incapacidad (str): Valor de incapacidad (por defecto 'ninguna').
+            bibliografia (str): Bibliografía del usuario (opcional).
+            calificacion (decimal): Calificación del usuario (opcional, valor predeterminado 3).
             extra_fields (dict): Campos adicionales.
 
         Returns:
@@ -32,6 +37,9 @@ class UsuarioManager(BaseUserManager):
         user = self.model(
             username=username,
             email=email,
+            incapacidad=incapacidad,
+            bibliografia=bibliografia,
+            calificacion=calificacion,
             **extra_fields
         )
         if password:
@@ -39,8 +47,8 @@ class UsuarioManager(BaseUserManager):
         user.save(using=self._db)
         user.save(using=self.db)
         return user
-    
-    def create_superuser(self, username, email, password=None, **extra_fields):
+
+    def create_superuser(self, username, email, password=None, incapacidad='ninguna', bibliografia='', calificacion=3, **extra_fields):
         """
         Crea y guarda un superusuario.
 
@@ -48,6 +56,9 @@ class UsuarioManager(BaseUserManager):
             username (str): Nombre de usuario.
             email (str): Correo electrónico del usuario.
             password (str): Contraseña del superusuario (opcional).
+            incapacidad (str): Valor de incapacidad (por defecto 'ninguna').
+            bibliografia (str): Bibliografía del usuario (opcional).
+            calificacion (decimal): Calificación del usuario (opcional, valor predeterminado 3).
             extra_fields (dict): Campos adicionales.
 
         Returns:
@@ -60,9 +71,10 @@ class UsuarioManager(BaseUserManager):
             raise ValueError('Superuser debe tener is_staff=True.')
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser debe tener is_superuser=True.')
-        
-        superuser = self.create_user(username, email, password, rol=Role.objects.get(name='Conductor'), **extra_fields)
+
+        superuser = self.create_user(username, email, password, incapacidad, bibliografia, calificacion, rol=Role.objects.get(name='Conductor'), **extra_fields)
         return superuser
+
 
 
 class Usuario(AbstractBaseUser):
@@ -101,8 +113,40 @@ class Usuario(AbstractBaseUser):
                             on_delete=models.CASCADE, 
                             default=1)
     is_superuser = models.BooleanField(default=False)
+    
     privacidad = models.BooleanField('Acepta políticas de privacidad', 
                                      default=False)
+
+
+    INCAPACIDAD_CHOICES = [
+        ('ninguna', 'Ninguna'),
+        ('silla_de_ruedas', 'Silla de ruedas'),
+        ('muletas', 'Muletas'),
+        ('vision_reducida', 'Visión reducida'),
+    ]
+
+    # Agrega el campo de incapacidad con las opciones definidas
+    incapacidad = models.CharField(
+        'Incapacidad',
+        max_length=15,
+        choices=INCAPACIDAD_CHOICES,
+        default='ninguna'  # Valor predeterminado: Ninguna
+    )
+
+    bibliografia = models.TextField(
+        'Bibliografía', 
+        blank=True
+        )
+    calificacion = models.DecimalField(
+        'Calificación', 
+        default=5,
+        max_digits=3,
+        decimal_places=1, 
+        validators=[
+            MinValueValidator(1), 
+            MaxValueValidator(5)
+            ]
+        )
 
     USERNAME_FIELD = 'username'
 

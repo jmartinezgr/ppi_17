@@ -101,6 +101,13 @@ class RegistroConductorForm(UserCreationForm):
         label="Fecha de Nacimiento",
         widget=forms.TextInput(attrs={'class': 'form-control', 'type': 'date'})
     )
+    
+    incapacidad = forms.ChoiceField(
+        choices=Usuario.INCAPACIDAD_CHOICES,
+        required=True,
+        label="Incapacidad",
+        widget=forms.Select(attrs={'class': 'form-control rounded-pill', 'style': 'text-align:center;'})
+    )
 
     class Meta:
         model = Usuario
@@ -119,6 +126,7 @@ class RegistroConductorForm(UserCreationForm):
         self.fields['foto_carnet'].widget.attrs.update({'class': 'custom-file-input'})
         self.fields['foto_licencia_conducir'].widget.attrs.update({'class': 'custom-file-input'})
         self.fields['foto_usuario'].widget.attrs.update({'class': 'custom-file-input'})
+        self.fields['incapacidad'].widget.attrs.update({'class': 'form-control'})
 
 class RegistroEstudianteForm(UserCreationForm):
     foto_carnet = forms.ImageField(
@@ -139,6 +147,13 @@ class RegistroEstudianteForm(UserCreationForm):
         label="Fecha de Nacimiento",
         widget=forms.TextInput(attrs={'class': 'form-control', 'type': 'date'})
     )
+
+    incapacidad = forms.ChoiceField(
+        choices=Usuario.INCAPACIDAD_CHOICES,
+        required=True,
+        label="Incapacidad",
+        widget=forms.Select(attrs={'class': 'form-control rounded-pill', 'style': 'text-align:center;'})
+    )
     
     def __init__(self, *args, **kwargs):
         super(RegistroEstudianteForm, self).__init__(*args, **kwargs)
@@ -153,6 +168,7 @@ class RegistroEstudianteForm(UserCreationForm):
         self.fields['privacidad'].widget.attrs.update()
         self.fields['foto_carnet'].widget.attrs.update({'class': 'custom-file-input'})
         self.fields['foto_usuario'].widget.attrs.update({'class': 'custom-file-input'})
+        self.fields['incapacidad'].widget.attrs.update({'class': 'form-control'})        
 
 
 class CustomAuthenticationForm(AuthenticationForm):
