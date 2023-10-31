@@ -1,43 +1,68 @@
-<!--
- 
-    Este codigo de html5 hace uso de los medios para templates de la libreria framework de desarrollo web Django, libreria de uso gratiuto,
-    haciendo uso del metodo extends para sobrecargar la plantilla principal y agregando un codigo html en el cuerpo de la pagina  y el metodo
-    load para cargar los elementos estaticos del proyecto. Este codigo funciona para cargar la pagina nosotros o About Us page donde se muestran
-    los desarrolladores principales de la app de Condcutor amigo e informacion pertinente sobre ellos.
-
--->
-
 {% extends 'layouts/layout.html' %}
 {% load static %}
 
 {% block content %}
+<style>
+    .card-text {
+        text-align: justify;
+    }
+
+    .card-text a {
+        text-decoration: none;
+        color: #007BFF; /* Cambia el color del enlace según tu preferencia */
+        transition: color 0.3s; /* Agrega una transición suave al color */
+    }
+
+    .card-text a:hover {
+        color: #0056b3; /* Cambia el color cuando se pasa el mouse por encima */
+    }
+</style>
+
 <div class="container">
     <h4 class="display-4 mb-4">Sobre Nosotros</h4>
     <div class="row">
         <div class="col-md-4">
             <div class="card mb-4">
-                <img src="{% static 'images/camilo.jpeg' %}" class="card-img-top" alt="Foto de Camilo Echeverri" style="height: 250px;">
+                <a href="https://github.com/ChewCEC" target="_blank">
+                    <img src="{% static 'images/camilo.jpeg' %}" class="card-img-top" alt="Foto de Camilo Echeverri" style="height: 250px;">
+                </a>
                 <div class="card-body">
                     <h5 class="card-title">Camilo Echeverri</h5>
-                    <p class="card-text">Descripción de Camilo Echeverri.</p>
+                    <p class="card-text">
+                        Somos estudiantes de 3er semestre de Ingeniería de Sistemas de la Universidad Nacional, apasionados por los sistemas de información y desarrolladores en progreso.
+                        <br>
+                        Contacto: <a href="mailto:cecheverric@unal.edu.co">cecheverric@unal.edu.co</a>
+                    </p>
                 </div>
             </div>
         </div>
         <div class="col-md-4">
             <div class="card mb-4">
-                <img src="{% static 'images/mateo.jpeg' %}" class="card-img-top" alt="Foto de Mateo Perez">
+                <a href="https://github.com/MateoPerez618" target="_blank">
+                    <img src="{% static 'images/mateo.jpeg' %}" class="card-img-top" alt="Foto de Mateo Perez">
+                </a>
                 <div class="card-body">
                     <h5 class="card-title">Mateo Perez</h5>
-                    <p class="card-text">Descripción de Mateo Perez.</p>
+                    <p class="card-text">
+                        Somos estudiantes de 3er semestre de Ingeniería de Sistemas de la Universidad Nacional, apasionados por los sistemas de información y desarrolladores en progreso.
+                        <br>
+                        Contacto: <a href="mailto:mateoperez@unal.edu.co">mateoperez@unal.edu.co</a>
+                    </p>
                 </div>
             </div>
         </div>
         <div class="col-md-4">
             <div class="card mb-4">
-                <img src="{% static 'images/juan1.jpeg' %}" class="card-img-top" alt="Foto de Juan Jose Martinez" style="height: 250px;">
+                <a href="https://github.com/jmartinezgr" target="_blank">
+                    <img src="{% static 'images/juan1.jpeg' %}" class="card-img-top" alt="Foto de Juan Jose Martinez" style="height: 250px;">
+                </a>
                 <div class="card-body">
                     <h5 class="card-title">Juan Jose Martinez</h5>
-                    <p class="card-text">Descripción de Juan Jose Martinez.</p>
+                    <p class="card-text">
+                        Somos estudiantes de 3er semestre de Ingeniería de Sistemas de la Universidad Nacional, apasionados por los sistemas de información y desarrolladores en progreso.
+                        <br>
+                        Contacto: <a href="mailto:jmartinezgr@unal.edu.co">jmartinezgr@unal.edu.co</a>
+                    </p>
                 </div>
             </div>
         </div>
