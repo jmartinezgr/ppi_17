@@ -198,7 +198,6 @@ class LicenseVerificationForm(forms.Form):
     )
 
 class CoordenadaForm(forms.Form):
-
     username = forms.CharField(
         max_length=100,
         required=False,
@@ -206,21 +205,12 @@ class CoordenadaForm(forms.Form):
         widget=forms.TextInput(attrs={'class': 'form-control rounded-pill'})
     )
 
-    latitud = forms.FloatField(
-        label='Latitud', 
-        min_value=-90, 
-        max_value=90,
-        widget=forms.TextInput(attrs={'class': 'form-control rounded-pill w-300'})
-        
-        )
-    
-    longitud = forms.FloatField(
-        label='Longitud', 
-        min_value=-180, 
-        max_value=180,
-        widget=forms.TextInput(attrs={'class': 'form-control rounded-pill w-300'})
-        )
-        
+    ending_place = forms.CharField(
+        max_length=100,
+        required=False,
+        label="Lugar de llegada",
+        widget=forms.TextInput(attrs={'class': 'form-control rounded-pill', 'style': 'text-align:center;'})
+    )
 
     STARTING_PLACE_CHOICES = [
         ('None', "Selecciona una opción"),
@@ -229,7 +219,6 @@ class CoordenadaForm(forms.Form):
         ((6.274057506330517, -75.59252364426453), 'Sede Robledo - Salida de la 80'),
         ((6.275527354991391, -75.59099154868524), 'Sede Robledo - Salida de la 66b'),
         ((6.263575166707227, -75.57482065639084), 'Sede Rio - Autopista Norte'),
-
     ]
 
     starting_place_type = forms.ChoiceField(

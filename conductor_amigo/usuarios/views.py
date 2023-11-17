@@ -17,10 +17,10 @@ from .forms import (
     CoordenadaForm,
 )
 from .models import Role, Usuario
-from utils.calcular_distancia import calcularDistacia
+from utils.obtener_coordenadas import get_lat_long_from_address, calcular_distancia_tiempo
 # import GOOGLE_MAPS_API_KEY desde settings.py
 import conductor_amigo.settings as settings 
-
+from utils.obtener_coordenadas import get_lat_long_from_address
 
 @login_required
 def buscar_usuario(request):
@@ -315,13 +315,21 @@ def ingresar_coordenada(request):
 
         if form.is_valid():
             # Procesa los datos si el formulario es válido
-            latitud = float(form.cleaned_data['latitud'])  # Lee la latitud como un float
-            longitud = float(form.cleaned_data['longitud'])  # Lee la longitud como un float
-            coord_user = (latitud, longitud)
-            coord_temp = (6.269377072694449, -75.56589311873437)
+
+            selected_option = form.cleaned_data.get('starting_place_type')
+            if selected_option is not None:
+                coord_temp = dict(form.STARTING_PLACE_CHOICES).get(selected_option)
+            
+            # Busca las coordenadas correspondientes a la opción seleccionada
+            for coordinates, label in form.STARTING_PLACE_CHOICES:
+                if label == selected_option:
+                    coord_temp = coordinates
+                    break
+            coord_user = get_lat_long_from_address(form.cleaned_data['ending_place'], settings.GOOGLE_MAPS_API_KEY)
+            
 
             # Calcula la distancia usando las coordenadas del usuario y las coordenadas temporales
-            data_ret = calcularDistacia(coord_user, coord_temp)
+            data_ret = calcular_distancia_tiempo(coord_user, coord_temp)
 
         else:
             # El formulario no es válido, maneja los errores si es necesario
@@ -332,6 +340,8 @@ def ingresar_coordenada(request):
 
     # Renderiza la plantilla 'rutas_similares.html' con el formulario y el resultado
     return render(request, 'pasajeros/rutas_similares.html', {'form': form, 'data_ret': data_ret })
+
+
 
 
 
