@@ -1,12 +1,18 @@
 # Este código utiliza el framework Django para desarrollo web.
 # Contiene vistas y funcionalidades relacionadas con la gestión de usuarios y viajes.
 
-from django.shortcuts import render, redirect
-from .forms import UserSearchForm, CustomAuthenticationForm, LicenseVerificationForm,RegistroConductorForm, RegistroEstudianteForm, CoordenadaForm
+from typing import Any
+from django.shortcuts import render, redirect, get_object_or_404
+from .forms import UserSearchForm, CustomAuthenticationForm, LicenseVerificationForm,RegistroConductorForm, RegistroEstudianteForm, CoordenadaForm, UserForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from .models import Role,Usuario
+from django.views.generic import TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy
+from django.views.generic.edit import UpdateView
+from django.contrib.messages.views import SuccessMessageMixin
 #importa la funcion calcularDistancia de la carpeta utils
 from utils.calcular_distancia import calcularDistacia
 import json
@@ -321,4 +327,16 @@ def ingresar_coordenada(request):
 
     # Renderiza la plantilla 'rutas_similares.html' con el formulario y el resultado
     return render(request, 'pasajeros/rutas_similares.html', {'form': form, 'data_ret': data_ret })
+
+class UserProfileUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    model = Usuario
+    template_name = 'pasajeros/editar_usuario.html'
+    fields = ["username", "direccion", "foto_usuario", "rol", "incapacidad", "bibliografia"]
+    success_url = reverse_lazy('profile')
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    def get_success_url(self):
+        return reverse_lazy('profile', args=[str(self.request.user.username)])
 

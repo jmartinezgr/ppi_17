@@ -2,7 +2,7 @@
 # definir formularios de autenticación, búsqueda y registro de usuarios.
 
 from django import forms
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
 from .models import Usuario
 
 
@@ -235,3 +235,11 @@ class CoordenadaForm(forms.Form):
         label="Lugar de partida",
         widget=forms.Select(attrs={'class': 'form-control rounded-pill', 'style': 'text-align:center;'})
     )
+
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = Usuario
+        fields = ["username", "direccion", "foto_usuario", "rol", "incapacidad", "bibliografia"]
+
+    def __init__(self, *args, **kwargs):
+        super(UserForm, self).__init__(*args, **kwargs)

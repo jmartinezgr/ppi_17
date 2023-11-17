@@ -4,6 +4,7 @@
 
 from django.urls import path
 from . import views
+from .views import UserProfileUpdateView
 
 # Configuración de URLs
 urlpatterns = [
@@ -19,7 +20,6 @@ urlpatterns = [
     path("viaje/",views.detalle_viaje, name="detalle_viaje"),
     path('profile/<str:username>/', views.profile, name='profile'),
     path("rutas_similares", views.ingresar_coordenada, name='rutas_similares'),
-    path("Usuario Discapacidad", views.usuario_discapacidad, name='usuario_discapacidad')
-
-
+    path("Usuario Discapacidad", views.usuario_discapacidad, name='usuario_discapacidad'),
+    path('profile/<str:username>/edit/', UserProfileUpdateView.as_view() , name='editar_usuario'),
 ]

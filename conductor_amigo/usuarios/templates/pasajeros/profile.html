@@ -1,105 +1,159 @@
 {% extends 'layouts/layout.html' %}
 {% block content %}
 {% load static %}
-
 <style>
-    /* Estilos adicionales para la página de perfil */
-    .profile {
-        text-align: center;
-        margin-top: 50px;
+    body { margin-top: 20px; }
+    .card-style1 {
+        box-shadow: 0px 0px 10px 0px rgb(89 75 128 / 9%);
+    }
+    .border-0 {
+        border: 0!important;
+    }
+    .card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        word-wrap: break-word;
+        background-color: #fff;
+        background-clip: border-box;
+        border: 1px solid rgba(0,0,0,.125);
+        border-radius: 0.25rem;
     }
 
-    .circular-img {
-        border-radius: 50%;
+    section {
+        padding: 120px 0;
         overflow: hidden;
-        width: 120px;
-        height: 120px;
-        margin: 0 auto;
-        border: 3px solid black;
+        background: #fff;
+    }
+    .mb-2-3, .my-2-3 {
+        margin-bottom: 2.3rem;
     }
 
-    .circular-img img {
-        display: block;
-        margin: 0 auto;
-        max-width: 100%;
-        max-height: 100%;
+    .section-title {
+        font-weight: 600;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+        position: relative;
+        display: inline-block;
+    }
+    .text-primary {
+        color: #ceaa4d !important;
+    }
+    .text-secondary {
+        color: #15395A !important;
+    }
+    .font-weight-600 {
+        font-weight: 600;
+    }
+    .display-26 {
+        font-size: 1.3rem;
     }
 
-    .profile-info {
-        margin-top: 20px;
+    @media screen and (min-width: 992px){
+        .p-lg-7 {
+            padding: 4rem;
+        }
+    }
+    @media screen and (min-width: 768px){
+        .p-md-6 {
+            padding: 3.5rem;
+        }
+    }
+    @media screen and (min-width: 576px){
+        .p-sm-2-3 {
+            padding: 2.3rem;
+        }
+    }
+    .p-1-9 {
+        padding: 1.9rem;
     }
 
-    .edit-profile-btn {
-        position: absolute;
-        bottom: 10px;
-        right: 10px;
-        background-color: #3498db;
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
+    .bg-secondary {
+        background: #15395A !important;
+    }
+    @media screen and (min-width: 576px){
+        .pe-sm-6, .px-sm-6 {
+            padding-right: 3.5rem;
+        }
+    }
+    @media screen and (min-width: 576px){
+        .ps-sm-6, .px-sm-6 {
+            padding-left: 3.5rem;
+        }
+    }
+    .pe-1-9, .px-1-9 {
+        padding-right: 1.9rem;
+    }
+    .ps-1-9, .px-1-9 {
+        padding-left: 1.9rem;
+    }
+    .pb-1-9, .py-1-9 {
+        padding-bottom: 1.9rem;
+    }
+    .pt-1-9, .py-1-9 {
+        padding-top: 1.9rem;
+    }
+    .mb-1-9, .my-1-9 {
+        margin-bottom: 1.9rem;
     }
 </style>
-
-<!-- Contenido específico de la página de perfil -->
-<div class="profile">
-    <!-- Contenedor circular para la imagen de perfil -->
-    <div class="circular-img">
-        <!-- Verificar si la foto de perfil existe -->
-        {% if user.foto_usuario %}
-            <!-- Imagen de perfil del usuario si existe -->
-            <img src="{{ user.foto_usuario.url }}" alt="Foto de perfil">
-        {% else %}
-            <!-- Imagen de prueba si la foto de perfil no existe -->
-            <img src="{% static 'images/no_foto.jpg' %}" alt="No hay foto de perfil">
-        {% endif %}
+<section class="bg-light">
+    <div class="container text-center">
+        <h3 class="section-title text-primary mb-3 mb-sm-4">Mi perfil</h3>
+        <div class="row">
+            <div class="col-lg-12 mb-4 mb-sm-5">
+                <div class="card card-style1 border-0">
+                    <div class="card-body p-1-9 p-sm-2-3 p-md-6 p-lg-7">
+                        <div class="row align-items-center">
+                            <div class="col-lg-6 mb-4 mb-lg-0">
+                                <!-- Verificar si la foto de perfil existe -->
+                                {% if user.foto_usuario %}
+                                    <!-- Imagen de perfil del usuario si existe -->
+                                    <img src="{{ user.foto_usuario.url }}" alt="Foto de perfil">
+                                {% else %}
+                                    <!-- Imagen de prueba si la foto de perfil no existe -->
+                                    <img src="{% static 'images/no_foto.jpg' %}" alt="No hay foto de perfil">
+                                {% endif %}
+                            </div>
+                            <div class="col-lg-6 px-xl-10">
+                                <div class="bg-secondary d-lg-inline-block py-1-9 px-1-9 px-sm-6 mb-1-9 rounded">
+                                    <h3 class="h2 text-white mb-0">{{ user.username }}</h3>
+                                    <h5 class="text-primary">{{ user.nombres }} {{ user.apellidos }}</h5>
+                                    <span class="text-primary">{{ user.rol }}</span>
+                                </div>
+                                <ul class="list-unstyled mb-1-9">
+                                    <li class="mb-2 mb-xl-3 display-28"><span class="display-26 text-secondary me-2 font-weight-600">Rol:</span>{{ user.rol }}</li>
+                                    <li class="mb-2 mb-xl-3 display-28"><span class="display-26 text-secondary me-2 font-weight-600">Email:</span>{{ user.email }}</li>
+                                    {% if user.calificacion %}
+                                        <li class="mb-2 mb-xl-3 display-28"><span class="display-26 text-secondary me-2 font-weight-600">Calificacion:</span>{{ user.calificacion }}</li>
+                                    {% else %}  
+                                        <li class="mb-2 mb-xl-3 display-28"><span class="display-26 text-secondary me-2 font-weight-600">Calificacion:</span>No posee calificacion registrada</li>
+                                    {% endif %}  
+                                    <li class="mb-2 mb-xl-3 display-28"><span class="display-26 text-secondary me-2 font-weight-600">Incapacidad:</span>{{ user.incapacidad }}</li>
+                                </ul>
+                                <ul class="social-icon-style1 list-unstyled mb-0 ps-0">
+                                    <li><a href="#!"><i class="ti-twitter-alt"></i></a></li>
+                                    <li><a href="#!"><i class="ti-facebook"></i></a></li>
+                                    <li><a href="#!"><i class="ti-pinterest"></i></a></li>
+                                    <li><a href="#!"><i class="ti-instagram"></i></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-12 mb-4 mb-sm-5">
+                <div>
+                    <span class="section-title text-primary mb-3 mb-sm-4">Sobre Mi</span>
+                    {% if user.bibliografia %}
+                        <p>{{ user.bibliografia }}</p>
+                    {% else %}
+                        <p>Pulsa el boton de editar para añadir una biografia</p>
+                    {% endif %}
+                    <a href="{% url 'editar_usuario' username=user.username %}" class="btn btn-primary">Editar</a>
+                </div>
     </div>
-
-    <!-- Información del perfil -->
-    <div class="profile-info">
-        <div class="px-4 sm:px-0">
-            <h3 class="text-base font-semibold leading-7 text-gray-900">Mi perfil</h3>
-            <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-500">Datos personalizables.</p>
-        </div>
-
-        <div class="mt-6 border-t border-gray-100">
-            <dl class="divide-y divide-gray-100">
-                <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                    <dt class="text-sm font-medium leading-6 text-gray-900">Username</dt>
-                    <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ user.username }}</dd>
-                </div>
-                <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                    <dt class="text-sm font-medium leading-6 text-gray-900">Nombre</dt>
-                    <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ user.nombres }}</dd>
-                </div>
-                <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                    <dt class="text-sm font-medium leading-6 text-gray-900">Apellido</dt>
-                    <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ user.apellidos }}</dd>
-                </div>
-                <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                    <dt class="text-sm font-medium leading-6 text-gray-900">Que estudio</dt>
-                    <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"></dd>
-                </div>
-                <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                    <dt class="text-sm font-medium leading-6 text-gray-900">Correo</dt>
-                    <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ user.email }}</dd>
-                </div>
-                <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                    <dt class="text-sm font-medium leading-6 text-gray-900">Sobre Mi</dt>
-                    <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                        Fugiat ipsum ipsum deserunt culpa aute sint do nostrud anim incididunt cillum culpa consequat.
-                        Excepteur qui ipsum aliquip consequat sint. Sit id mollit nulla mollit nostrud in ea officia
-                        proident. Irure nostrud pariatur mollit ad adipisicing reprehenderit deserunt qui eu.
-                    </dd>
-                </div>
-                <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                    <!-- ... (resto de tu código) ... -->
-                </div>
-            </dl>
-        </div>
-    </div>
-
-    <!-- Botón de edición en la esquina inferior derecha -->
-</div>
+</section>
 {% endblock %}
