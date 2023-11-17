@@ -1,11 +1,80 @@
 {% extends 'layouts/layout.html' %}
+<!-- HTML provisional -->
 
 {% block content %}
-    <h2>Actualizar Perfil</h2>
-
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Guardar Cambios</button>
-    </form>
+  <!-- Inicia el bloque de contenido -->
+  <div class="container mt-5">
+    <!-- Contenedor principal con margen superior -->
+    <div class="row justify-content-center">
+      <!-- Fila que centra su contenido -->
+      <div class="col-md-10">
+        <!-- Columna de ancho medio para dispositivos medianos -->
+        <div class="card" style="margin-top: 30px;">
+          <!-- Tarjeta con margen superior -->
+          <div class="card-header text-center">Actualizar Perfil</div>
+          <!-- Encabezado de la tarjeta -->
+          <div class="card-body">
+            <!-- Cuerpo de la tarjeta -->
+            {% for message in messages %}
+              <!-- Bucle para mostrar mensajes de error -->
+              <div class="alert alert-danger" id="Errocito">
+                {{ message }}
+              </div>
+            {% endfor %}
+            <form method="post" enctype="multipart/form-data">
+              <!-- Formulario con método de envío y tipo de codificación -->
+              {% csrf_token %}
+              <!-- Token de seguridad para evitar ataques CSRF -->
+              <div class="row">
+                <!-- Inicia una fila para dividir el contenido en dos columnas -->
+                <!-- Columna izquierda -->
+                <div class="col-md-6">
+                  <div class="form-group">
+                    {{ form.username.label_tag }}
+                    {{ form.username }}
+                  </div>
+                  <div class="form-group">
+                    {{ form.direccion.label_tag }}
+                    {{ form.direccion }}
+                  </div>
+                  <div class="form-group">
+                    {{ form.foto_usuario.label_tag }}
+                    <div class="custom-file">
+                      {{ form.foto_usuario }}
+                      <label class="custom-file-label" for="{{ form.foto_usuario.id_for_label }}" accept=".png">Seleccionar archivo PNG</label>
+                    </div>
+                  </div>
+                </div>
+                <!-- Columna derecha -->
+                <div class="col-md-6">
+                  <div class="form-group">
+                    {{ form.rol.label_tag }}
+                    {{ form.rol }}
+                  </div>
+                  <div class="form-group">
+                    {{ form.incapacidad.label_tag }}
+                    {{ form.incapacidad }}
+                  </div>
+                  <div class="form-group">
+                    {{ form.bibliografia.label_tag }}
+                    {{ form.bibliografia }}
+                  </div>
+                </div>
+              </div>
+              <!-- Fin de la fila -->
+              <div class="form-group" style="margin-top: 8px;">
+                <button type="submit" class="btn btn-primary rounded-pill" style="width: 100%; margin-top: 1px;">Guardar cambios</button>
+              </div>
+              <!-- Botón de envío del formulario -->
+            </form>
+            <!-- Fin del formulario -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Fin del contenedor principal -->
 {% endblock %}
+<!-- Fin del bloque de contenido -->
+
+

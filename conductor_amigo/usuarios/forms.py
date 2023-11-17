@@ -237,9 +237,14 @@ class CoordenadaForm(forms.Form):
     )
 
 class UserForm(forms.ModelForm):
+    """
+    Formulario de edicion de perfil
+    """
     class Meta:
+        # Define el modelo y los campos del formulario
         model = Usuario
         fields = ["username", "direccion", "foto_usuario", "rol", "incapacidad", "bibliografia"]
 
     def __init__(self, *args, **kwargs):
+        # Inicializa el formulario
         super(UserForm, self).__init__(*args, **kwargs)

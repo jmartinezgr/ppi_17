@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Role,Usuario
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.urls import reverse_lazy
+from django.urls import reverse
 from django.views.generic.edit import UpdateView
 from django.contrib.messages.views import SuccessMessageMixin
 #importa la funcion calcularDistancia de la carpeta utils
@@ -329,14 +329,32 @@ def ingresar_coordenada(request):
     return render(request, 'pasajeros/rutas_similares.html', {'form': form, 'data_ret': data_ret })
 
 class UserProfileUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    # Modelo que se está actualizando
     model = Usuario
+
+    # Nombre de la plantilla utilizada para la vista
     template_name = 'pasajeros/editar_usuario.html'
+
+    # Campos que se mostrarán y se podrán editar en el formulario
     fields = ["username", "direccion", "foto_usuario", "rol", "incapacidad", "bibliografia"]
-    success_url = reverse_lazy('profile')
+
+    # Mensaje de éxito mostrado después de una actualización exitosa
+    success_message = "Perfil actualizado exitosamente"
 
     def get_object(self, queryset=None):
+        # Obtiene el objeto que se va a actualizar (en este caso, el usuario actual)
         return self.request.user
 
+    def form_valid(self, form):
+        # Asigna el usuario actual al campo 'usuario' en el formulario
+        form.instance.usuario = self.request.user
+
+        # Llama al método form_valid de la clase padre
+        response = super(UserProfileUpdateView, self).form_valid(form)
+
+        return response
+
     def get_success_url(self):
-        return reverse_lazy('profile', args=[str(self.request.user.username)])
+        # Retorna la URL de éxito después de la actualización
+        return reverse('profile', args=[str(self.request.user.username)])
 
