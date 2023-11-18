@@ -2,9 +2,8 @@
 # definir formularios de autenticación, búsqueda y registro de usuarios.
 
 from django import forms
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm, PasswordChangeForm
 from .models import Usuario
-
 
 class UserSearchForm(forms.Form):
     """
@@ -248,3 +247,26 @@ class UserForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         # Inicializa el formulario
         super(UserForm, self).__init__(*args, **kwargs)
+
+class CustomPasswordChangeForm(PasswordChangeForm):
+    # Campo para la contraseña actual
+    old_password = forms.CharField(
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Contraseña actual'}),
+        label='Contraseña actual',
+    )
+
+    # Campo para la nueva contraseña
+    new_password1 = forms.CharField(
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Nueva contraseña'}),
+        label='Nueva contraseña',
+    )
+
+    # Campo para repetir la nueva contraseña
+    new_password2 = forms.CharField(
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Repetir nueva contraseña'}),
+        label='Repetir nueva contraseña',
+    )
+
+    class Meta:
+        model = Usuario
+        fields = ['old_password', 'new_password1', 'new_password2']

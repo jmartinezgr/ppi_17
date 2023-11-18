@@ -150,9 +150,19 @@
                     {% if user.bibliografia %}
                         <p>{{ user.bibliografia }}</p>
                     {% else %}
-                        <p>Pulsa el boton de editar para añadir una biografia</p>
+                        {% if user == request.user %}
+                            <!-- Muestra el mensaje solo si el usuario logueado es el mismo que el usuario cuyo perfil se está visualizando -->
+                            <p>Pulsa el botón de editar para añadir una biografía</p>
+                        {% else %}
+                            <!-- Muestra el mensaje si el usuario logueado no es el mismo que el usuario cuyo perfil se está visualizando -->
+                            <p>Este usuario no posee biografía</p>
+                        {% endif %}
                     {% endif %}
-                    <a href="{% url 'editar_usuario' username=user.username %}" class="btn btn-primary">Editar</a>
+                    
+                    {% if user == request.user %}
+                        <!-- Muestra el botón de editar solo si el usuario logueado es el mismo que el usuario cuyo perfil se está visualizando -->
+                        <a href="{% url 'editar_usuario' username=user.username %}" class="btn btn-primary">Editar</a>
+                    {% endif %}
                 </div>
     </div>
 </section>

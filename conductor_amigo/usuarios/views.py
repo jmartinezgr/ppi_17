@@ -3,41 +3,32 @@
 
 from typing import Any
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import UserSearchForm, CustomAuthenticationForm, LicenseVerificationForm,RegistroConductorForm, RegistroEstudianteForm, CoordenadaForm, UserForm
+from .forms import UserSearchForm, CustomAuthenticationForm, LicenseVerificationForm,RegistroConductorForm, RegistroEstudianteForm, CoordenadaForm, UserForm, CustomPasswordChangeForm
 from django.contrib import messages
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from .models import Role,Usuario
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views.generic.edit import UpdateView
 from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib.auth.views import PasswordChangeView
+
 #importa la funcion calcularDistancia de la carpeta utils
 from utils.calcular_distancia import calcularDistacia
 import json
 
 @login_required
 def buscar_usuario(request):
-    """
-    Vista para buscar usuarios y mostrar los resultados.
+    # Obtén los parámetros de búsqueda del request
+    username = request.GET.get('username', '')
 
-    Args:
-        request: Solicitud HTTP enviada por el cliente.
+    # Filtra los usuarios según los parámetros de búsqueda
+    users = Usuario.objects.filter(username__icontains=username)
 
-    Returns:
-        Renderiza la plantilla 'pasajeros/busqueda_usuarios.html' con el formulario y los datos devueltos.
-    """
-    data_returned = None
-    
-    if request.method == 'POST':
-        form = UserSearchForm(request.POST)
-        if form.is_valid():
-            data_returned = form.search()
-    else:
-        form = UserSearchForm()
-
-    return render(request, 'pasajeros/busqueda_usuarios.html', {'form': form, 'data_returned': data_returned})
+    # Renderiza la plantilla con los resultados de la búsqueda
+    return render(request, 'pasajeros/busqueda_usuarios.html', {'users': users})
 
 def usuario_discapacidad(request):
     """
@@ -295,10 +286,11 @@ def profile(request, username=None):
     """
     current_user = request.user
     if username and username != current_user.username:
-        user = Usuario.object.get(username=username)
+        user = Usuario.objects.get(username=username)
     else:
         user = current_user
     return render(request, 'pasajeros/profile.html', {'user': user})
+
 
 def ingresar_coordenada(request):
     # Inicializa la variable que contendrá el resultado
@@ -358,3 +350,35 @@ class UserProfileUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView)
         # Retorna la URL de éxito después de la actualización
         return reverse('profile', args=[str(self.request.user.username)])
 
+class ProfilePasswordChangeView(PasswordChangeView):
+    template_name = 'pasajeros/cambio_contraseña.html'
+    success_url = reverse_lazy('login_view')
+    form_class = CustomPasswordChangeForm
+
+    def get_context_data(self, **kwargs):
+        # Obtener datos de contexto y agregar información adicional
+        context = super().get_context_data(**kwargs)
+        context['password_changed'] = self.request.session.get('password_changed', False)
+        return context
+
+    def form_valid(self, form):
+        # Actualizar el campo created_by_admin del modelo Usuario
+        usuario = Usuario.objects.get(username=self.request.user.username)
+        usuario.created_by_admin = False
+        usuario.save()
+
+        # Mostrar mensaje de éxito y actualizar la sesión de autenticación
+        messages.success(self.request, 'Cambio de contraseña exitoso')
+        update_session_auth_hash(self.request, form.user)
+        self.request.session['password_changed'] = True
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        # Mostrar mensaje de error en caso de un problema con el formulario
+        messages.error(
+            self.request,
+            'Hubo un error al momento de intentar cambiar la contraseña: {}.'.format(
+                form.errors.as_text()
+            )
+        )
+        return super().form_invalid(form)
