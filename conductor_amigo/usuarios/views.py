@@ -5,6 +5,11 @@ import json
 
 import googlemaps
 
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib.auth.views import PasswordChangeView
+from django.views.generic.edit import UpdateView
+from django.urls import reverse, reverse_lazy
 from django.shortcuts import render, redirect
 from typing import Any
 from django.shortcuts import render, redirect, get_object_or_404
