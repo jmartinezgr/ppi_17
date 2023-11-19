@@ -21,5 +21,4 @@ urlpatterns = [
     path("rutas_similares", views.ingresar_coordenada, name='rutas_similares'),
     path("Usuario Discapacidad", views.usuario_discapacidad, name='usuario_discapacidad')
 
-
 ]
