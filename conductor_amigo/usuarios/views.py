@@ -5,6 +5,12 @@ import json
 
 import googlemaps
 
+from django.views import View
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib.auth.views import PasswordChangeView
+from django.views.generic.edit import UpdateView
+from django.urls import reverse, reverse_lazy
 from django.shortcuts import render, redirect
 from typing import Any
 from django.shortcuts import render, redirect, get_object_or_404
@@ -19,8 +25,9 @@ from .forms import (
     RegistroConductorForm,
     RegistroEstudianteForm,
     CoordenadaForm,
+    CalificacionForm,
 )
-from .models import Role, Usuario
+from .models import Role, Usuario, Calificacion
 from utils.obtener_coordenadas import calcular_distancia_tiempo
 # import GOOGLE_MAPS_API_KEY desde settings.py
 import conductor_amigo.settings as settings 
@@ -430,3 +437,31 @@ class ProfilePasswordChangeView(PasswordChangeView):
             )
         )
         return super().form_invalid(form)
+
+class CalificacionView(View):
+    template_name = 'pasajeros/calificar.html'
+
+    def get(self, request, username):
+        usuario_calificado = Usuario.objects.get(username=username)
+        form = CalificacionForm()
+        return render(request, self.template_name, {'usuario_calificado': usuario_calificado, 'form': form})
+
+    def post(self, request, username):
+        usuario_calificado = Usuario.objects.get(username=username)
+        form = CalificacionForm(request.POST)
+
+        # Verificar si el usuario ya ha sido calificado por el calificador actual
+        if Calificacion.objects.filter(calificador=request.user, usuario_calificado=usuario_calificado).exists():
+            messages.error(request, 'Ya has calificado a este usuario anteriormente.')
+            return redirect('profile', username=username)
+
+        if form.is_valid():
+            calificacion = form.save(commit=False)
+            calificacion.calificador = request.user
+            calificacion.usuario_calificado = usuario_calificado
+            calificacion.save()
+            return redirect('profile', username=username)
+        else:
+            print(f"Form errors: {form.errors}")
+
+        return render(request, self.template_name, {'usuario_calificado': usuario_calificado, 'form': form})
