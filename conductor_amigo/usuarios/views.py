@@ -337,7 +337,7 @@ def ingresar_coordenada(request):
             
             # Calcula la distancia usando las coordenadas del usuario y las coordenadas temporales
             data_ret = calcular_distancia_tiempo(start_coord, end_coord)
-            print(data_ret)
+            
             # Crear el mapa de Folium
             mapa = folium.Map(location=punto_medio, zoom_start=15)
             folium.Marker([start_coord[0], start_coord[1]], popup='Coordenada 1').add_to(mapa)
