@@ -156,6 +156,7 @@
                         {% else %}
                             <!-- Muestra el mensaje si el usuario logueado no es el mismo que el usuario cuyo perfil se está visualizando -->
                             <p>Este usuario no posee biografía</p>
+                            <a href="{% url 'calificar' username=user.username %}" class="btn btn-secondary mt-3">Calificar</a>
                         {% endif %}
                     {% endif %}
                     

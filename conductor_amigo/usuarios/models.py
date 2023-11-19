@@ -6,7 +6,7 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.contrib.auth.hashers import make_password
-
+from django.conf import settings
 
 class UsuarioManager(BaseUserManager):
     """
@@ -217,6 +217,14 @@ class Usuario(AbstractBaseUser):
         """
         self.password = make_password(raw_password)
 
+    def actualizar_calificacion(self):
+        calificacion = self.calificaciones_recibidas.all()
+        total_puntuacion = sum([calificacion.puntuacion for calificacion in calificacion])
+        cantidad_calificaciones = len(calificacion)
+        self.calificacion = total_puntuacion / cantidad_calificaciones if cantidad_calificaciones > 0 else 0
+        self.num_calificacion = cantidad_calificaciones
+        self.save()
+
 
 class Role(models.Model):
     """
@@ -233,3 +241,15 @@ class Role(models.Model):
             String: El valor name de la clase.
         """
         return self.name
+
+class Calificacion(models.Model):
+    calificador = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='calificaciones_hechas')
+    usuario_calificado = models.ForeignKey('usuarios.Usuario', on_delete=models.CASCADE, related_name='calificaciones_recibidas')
+    puntuacion = models.PositiveIntegerField()
+
+    class Meta:
+        unique_together = ['calificador', 'usuario_calificado']
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.usuario_calificado.actualizar_calificacion()

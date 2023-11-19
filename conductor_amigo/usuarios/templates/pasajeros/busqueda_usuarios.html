@@ -1,33 +1,28 @@
 {% extends 'layouts/layout.html' %}
 
 {% block content %}
-    <h2>Resultados de la búsqueda</h2>
+<div class="flex items-center justify-center h-screen">
+    <div class="bg-blue-200 p-5 rounded-lg text-center">
+        <form method="get" action="{% url 'busqueda' %}" class="mb-4">
+            <!-- Formulario para la búsqueda -->
+            <label for="username" class="block"></label>
+            <input type="text" name="username" value="{{ request.GET.username }}" placeholder="Ingrese el username" class="border p-2 w-full">
+            <button type="submit" class="bg-black-500 p-2 text-black font-semibold hover:bg-black-800 transition-colors">Buscar</button>
+        </form>
+        <h2 class="text-2xl font-bold mb-4">Resultados de la búsqueda</h2>
 
-    <form method="get" action="{% url 'busqueda' %}">
-        <!-- Formulario para la búsqueda -->
-        <label for="username">Username:</label>
-        <input type="text" name="username" value="{{ request.GET.username }}" placeholder="Ingrese el username">
-
-        <label for="rol">Tipo de usuario:</label>
-        <select name="rol">
-            <option value="" selected>Seleccione...</option>
-            <option value="pasajero">Pasajero</option>
-            <option value="conductor">Conductor</option>
-        </select>
-
-        <button type="submit">Buscar</button>
-    </form>
-
-    {% if users %}
-        <!-- Mostrar los resultados de la búsqueda -->
-        <ul>
-            {% for user in users %}
-                <li>{{ user.username }} - {{ user.rol }} 
-                    <a href="{% url 'profile' username=user.username %}">Ver perfil</a>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No se encontraron resultados.</p>
-    {% endif %}
+        {% if users %}
+            <!-- Mostrar los resultados de la búsqueda -->
+            <ul>
+                {% for user in users %}
+                    <li class="mb-2">{{ user.username }} - {{ user.rol }} 
+                        <a href="{% url 'profile' username=user.username %}" class="text-blue-500 hover:underline">Ver perfil</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No se encontraron resultados.</p>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}

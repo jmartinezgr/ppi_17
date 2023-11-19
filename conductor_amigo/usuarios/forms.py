@@ -3,7 +3,7 @@
 
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm, PasswordChangeForm
-from .models import Usuario
+from .models import Usuario, Calificacion
 
 class UserSearchForm(forms.Form):
     """
@@ -270,3 +270,14 @@ class CustomPasswordChangeForm(PasswordChangeForm):
     class Meta:
         model = Usuario
         fields = ['old_password', 'new_password1', 'new_password2']
+
+class CalificacionForm(forms.ModelForm):
+    class Meta:
+        model = Calificacion
+        fields = ['puntuacion']
+
+    def clean_puntuacion(self):
+        puntuacion = self.cleaned_data['puntuacion']
+        if puntuacion < 1 or puntuacion > 5:
+            raise forms.ValidationError('La puntuación debe estar entre 1 y 5.')
+        return puntuacion

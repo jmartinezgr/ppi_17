@@ -4,7 +4,7 @@
 
 from django.urls import path
 from . import views
-from .views import UserProfileUpdateView, ProfilePasswordChangeView
+from .views import UserProfileUpdateView, ProfilePasswordChangeView, CalificacionView
 
 # Configuración de URLs
 urlpatterns = [
@@ -23,4 +23,5 @@ urlpatterns = [
     path("Usuario Discapacidad", views.usuario_discapacidad, name='usuario_discapacidad'),
     path('profile/<str:username>/edit/', UserProfileUpdateView.as_view() , name='editar_usuario'),
     path('profile/<str:username>/contrasena/', ProfilePasswordChangeView.as_view(), name='cambio_contrasena'),
+    path('calificar/<str:username>/', CalificacionView.as_view(), name='calificar'),
 ]
