@@ -12,40 +12,30 @@
                     <div class="mb-3">
                         <label for="{{ form.username.id_for_label }}" class="form-label">Nombre de Usuario:</label>
                         {{ form.username }}
-                      </div>
+                    </div>
                     <div class="mb-3">
                         <label for="{{ form.starting_place_type.id_for_label }}" class="form-label">Lugar de partida:</label>
                         {{ form.starting_place_type }}
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Lugar de destino:</label>
+                        <label for="{{ form.starting_place_type.id_for_label }}" class="form-label">Lugar de destino</label>
+                        {{ form.ending_place_type }}
                     </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="mb-3">
-                                <label for="{{ form.Latitud.id_for_label }}" class="form-label">Latitud:</label>
-                                {{ form.latitud }}
-                            </div>
-                        </div>
-                        <div class="col-md-1">
-                        </div>
-                        <div class="col-md-4">
-                            <div class="mb-3">
-                                <label for="{{ form.Longitud.id_for_label }}" class="form-label">Longitud:</label>
-                                {{ form.longitud }}
-                            </div>
-                        </div>    
-                    </div>
-                    <button class="btn btn-primary w-100 rounded-pill" type="submit" style="margin-top:20px;">Buscar Viaje</button>
+                 
+                    <button class="btn btn-primary w-100 rounded-pill" type="submit" style="margin-top:20px;">Calcular Viaje</button>
                     <div id="loading-message" style="display: none; margin-top: 10px; text-align: center;">
-                        Esto puede tardar unos minutos
                     </div>
                 </div>
             </div>
         </form>
     </div>
+    {% if mapa %}
+        {{ mapa|safe }}
+    {% endif %}
+
     {% if data_ret %}
-    <p class="mt-3">La distancia más corta encontrada fue: {{ data_ret.distancia }}</p>
+    <p class="mt-3">La distacia del recorrido es: {{ data_ret.distancia }}</p>
+    <p class="mt-3">El tiempo del recorrido es: {{ data_ret.tiempo_viaje }}</p>
     {% else %}
     <p class="mt-3">Error de búsqueda. Complete el formulario </p>
     {% endif %}

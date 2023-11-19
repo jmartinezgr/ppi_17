@@ -1,10 +1,12 @@
 # Este código utiliza el framework Django para desarrollo web.
 # Contiene vistas y funcionalidades relacionadas con la gestión de usuarios y viajes.
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout, authenticate, login, logout
+from conductor_amigo.mixins import Directions
 
+import conductor_amigo.settings as settings
 def home(request):
     """
     Vista para la página de inicio.
@@ -54,3 +56,49 @@ def logout_view(request):
     """
     logout(request=request)
     return redirect('login_view')
+
+
+def route(request):
+
+	context = {
+	"google_api_key": settings.GOOGLE_MAPS_API_KEY,
+	"base_country": settings.BASE_COUNTRY}
+	return render(request, 'main/route.html', context)
+
+
+'''
+Basic view for displaying a map 
+'''
+def map(request):
+
+	lat_a = request.GET.get("lat_a", None)
+	long_a = request.GET.get("long_a", None)
+	lat_b = request.GET.get("lat_b", None)
+	long_b = request.GET.get("long_b", None)
+
+
+	#only call API if all 4 addresses are added
+	if lat_a and lat_b:
+		directions = Directions(
+			lat_a= lat_a,
+			long_a=long_a,
+			lat_b = lat_b,
+			long_b=long_b,
+			)
+	else:
+		return redirect(reverse('main:route'))
+
+	context = {
+	"google_api_key": settings.GOOGLE_MAPS_API_KEY,
+	"base_country": settings.BASE_COUNTRY,
+	"lat_a": lat_a,
+	"long_a": long_a,
+	"lat_b": lat_b,
+	"long_b": long_b,
+	"origin": f'{lat_a}, {long_a}',
+	"destination": f'{lat_b}, {long_b}',
+	"directions": directions,
+
+	}
+	return render(request, 'main/map.html', context)
+
