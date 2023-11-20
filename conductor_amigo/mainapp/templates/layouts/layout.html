@@ -53,11 +53,6 @@
                             <div class="dropdown-menu" aria-labelledby="funcionalidadesDropdown">
                                 <a class="dropdown-item" href={% url "busqueda" %}> Búsqueda </a>
                                 <a class="dropdown-item" href={% url "verificar_licencia" %}> Verificar licencia </a>
-                                <a class="dropdown-item" href={% url "rutas_similares" %}> Buscar ruta</a>
-                                {% if user.rol.name == 'Conductor' %}
-                                    <a class="dropdown-item" href={% url "crear_viaje" %}> Crear Viaje</a>
-                                {% endif %}
-                                <a class="dropdown-item" href={% url "usuario_discapacidad" %}> Usuario con discapacidad </a>
                                 <a class="dropdown-item" href={% url "nosotros" %}> Nosotros </a>
                             </div>
                         </li>
@@ -65,7 +60,7 @@
                             <a class="nav-link" href="{% url 'profile' username=user.username %}"> Mi perfil </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href={% url "logout_view" %}> Cerrar Sesión </a>
+                            <a class="nav-link" href="{% url 'logout_view' %}"> Cerrar Sesión </a>
                         </li>
                     {% else %}
                         <!-- Menú de navegación para usuarios no autenticados -->
