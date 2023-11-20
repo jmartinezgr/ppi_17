@@ -20,7 +20,7 @@
                     <h5 class="card-title">Conductor: {{ viaje.conductor }}</h5>
                     <p class="card-text">Destino: {{ viaje.destino }}</p>
                     <p class="card-text">Hora de Salida: {{ viaje.hora_salida }}</p>
-                    <a href="" class="btn btn-primary">Aplicar al Viaje</a>
+                    <a href="{% url 'detalle_viaje' viaje.id %}" class="btn btn-primary">Aplicar al Viaje</a>
                 </div>
             </div>
         </div>
