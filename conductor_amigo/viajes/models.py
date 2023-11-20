@@ -22,7 +22,6 @@ class Viaje(models.Model):
     fecha_inicio = models.DateTimeField('Fecha de Inicio')
     fecha_fin = models.DateTimeField('Fecha de Finalización', null=True, blank=True)
     condicion = models.CharField('Condición del Viaje', max_length=23, choices=CONDICIONES_VIAJE, default='Activo')
-
     puestos_maximos = models.IntegerField('Puestos Máximos', default=1)
 
     def __str__(self):
