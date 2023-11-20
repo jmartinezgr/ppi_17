@@ -8,6 +8,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.utils import timezone
+from django.http import Http404
 ####Librerias de Terceros
 from utils.calcular_distancia import calcular_punto_medio
 from utils.obtener_coordenadas import calcular_distancia_tiempo
@@ -19,6 +20,7 @@ from .models import Viaje
 from .forms import ViajesForm,CoordenadaForm
 ####Librerias de otras apps
 from usuarios.models import Usuario
+
 
 def ingresar_coordenada(request):
     # Inicializa la variable que contendrá el resultado
@@ -68,6 +70,7 @@ def ingresar_coordenada(request):
     # Renderiza la plantilla 'rutas_similares.html' con el formulario y el resultado
     return render(request, 'conductores/rutas_similares.html', {'form': form, 'data_ret': data_ret, 'mapa': mapa_html })
 
+@login_required
 def lista_viajes(request):
     """
     Vista para mostrar una lista de viajes activos ordenados por fecha de inicio.
@@ -96,37 +99,21 @@ def lista_viajes(request):
 
     context = {'viajes': viajes}
     return render(request, 'pasajeros/lista_viajes.html', context)  
-"""
-@login_required
-def detalle_viaje(request):
-    
-    Vista para mostrar detalles de un viaje.
 
-    Args:
-        request: Solicitud HTTP enviada por el cliente.
-
-    Returns:
-        Renderiza la plantilla 'conductores/viaje.html' con los detalles del viaje.
-
-    viaje = {
-        'nombre_conductor': 'Juan Pérez',
-        'nombre_usuario': 'María González',
-        'documento_conductor': '123456789',
-        'documento_usuario': '987654321',
-        'lugar_destino': 'Plaza Principal Marinilla',
-        'distancia': '50 km',
-        'precio': '$5000.00',
-        'tiempo_inicial': '2023-10-10 06:00 PM',
-    }
-
-    context = {'viaje': viaje}
-    return render(request, 'conductores/viaje.html', context)
-"""
 @login_required
 def crear_viaje(request):
     if request.user.rol == 'Pasajero':
-        raise 
+        raise Http404('Si quieres crear un viaje cambia tu perfil a conductor')
     
+    usuario_pre = Usuario.objects.get(username=request.user.username)
+
+    viajes_activos_en_curso = Viaje.objects.filter(conductor=usuario_pre, condicion__in=('Activo', 'En curso'))
+
+    # Verifica si hay algún viaje activo o en curso
+    if viajes_activos_en_curso.exists():
+        # Levanta un error Http404 con un mensaje personalizado
+        raise Http404("No puedes crear un nuevo viaje porque ya tienes uno en estado 'Activo' o 'En curso'.")
+
     if request.method == 'POST':
         form = ViajesForm(request.POST)
         if form.is_valid():
