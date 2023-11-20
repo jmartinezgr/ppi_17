@@ -33,10 +33,10 @@
                         
                         {% if viaje.conductor == user %}
                             {% if viaje.condicion == 'Activo' or viaje.condicion == 'A la espera de arranque' %}
-                            <button class="btn btn-danger form-control">Iniciar Viaje</button>    
-                            <button class="btn btn-danger form-control" style="margin-top: 10px;">Cancelar Viaje</button>
+                            <a href="{% url 'accion_viaje' accion='iniciar' viaje_id=viaje.id%}" class="btn btn-danger form-control">Iniciar Viaje</a>    
+                            <a href="{% url 'accion_viaje' accion='cancelar' viaje_id=viaje.id%}" class="btn btn-danger form-control" style="margin-top: 10px;">Cancelar Viaje</a>
                             {% elif viaje.condicion == 'En curso' %}
-                                <button class="btn btn-danger form-control">Finalizar Viaje</button>
+                                <a href ="{% url 'accion_viaje' accion='finalizar' viaje_id=viaje.id%}"class="btn btn-danger form-control">Finalizar Viaje</a>
                             {% elif viaje.condicion == 'Finalizado' %}
                                 <p class="text-muted">Viaje Finalizado</p>
                             {% endif %}
@@ -106,7 +106,7 @@
                             {% if user in viaje.pasajeros %}
                                 <button class="btn btn-success form-control">Enviar mensaje al conductor</button>
                             {% else %}
-                                <button class="btn btn-success form-control">Unirse al Viaje</button>
+                            <a href="{% url 'accion_viaje' accion='unirse' viaje_id=viaje.id%}" class="btn btn-success form-control">Unirse al Viaje</a>
                             {% endif %}
                         {% endif %}
 

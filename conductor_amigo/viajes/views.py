@@ -197,3 +197,25 @@ def viaje(request):
             return redirect('lista_viajes')
         
     return redirect('detalle_viaje', viaje_id=viaje.id)
+
+@login_required
+def accion_viaje(request,accion,viaje_id):
+    viaje = Viaje.objects.get(id=viaje_id)
+    if accion == 'iniciar' and viaje.condcutor == request.user:
+        viaje.condicion = 'En curso'
+        viaje.save()
+        return redirect('viaje')
+    elif accion == 'cancelar' and viaje.condcutor == request.user:
+        viaje.condicion = 'Cancelado'
+        viaje.save()
+        return redirect('crear_viaje')
+    elif accion == 'unirse' and request.user not in viaje.pasajeros:
+        viaje.unirse_al_viaje(request.user)
+        viaje.save()
+        return redirect('viaje')
+    elif accion=='finalizar' and viaje.condcutor == request.user:
+        viaje.condicion = 'Finalizado'
+        viaje.save()
+        return redirect('crear_viaje')
+    else:
+        raise Http404('No es una accion valida')
