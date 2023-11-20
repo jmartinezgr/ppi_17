@@ -1,0 +1,112 @@
+{% extends 'layouts/layout.html' %}
+{% load static %}
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Detalles del Viaje</h1>
+    {% for message in messages %}
+    <div class="alert alert-danger" id="Errocito">
+      {{ message }}
+    </div>
+    {% endfor %}
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row">
+            <!-- Columna 1 - Conductor -->
+            <div class="col-lg-4" >
+                <div class="card mb-4" id="tarjeta" style="min-height: 470px;">
+                    <div class="card-body">
+                        <h5 class="card-title">Conductor</h5>
+                        {% if viaje.conductor.foto_usuario %}
+                            <img src="{{ viaje.conductor.foto_usuario.url }}" alt="{{ viaje.conductor.username }}" class="img-fluid mb-3" style="max-height: 150px;">
+                        {% else %}
+                            <img src="{% static 'images/no_foto.jpg' %}" alt="No hay foto de perfil" style="max-height: 150px;">
+                        {% endif %}
+                        <p class="card-text">Nombre: {{ viaje.conductor.nombres }} {{ viaje.conductor.apellidos }}</p>
+                        <p class="card-text">Calificación: {{ viaje.conductor.calificacion }}</p>
+                        <p class="card-text">Descripción: {{ viaje.conductor.bibliografia }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Columna 2 - Fecha y Mapa -->
+            <div class="col-lg-4" >
+                <div class="card mb-4" id="tarjeta" style="min-height: 470px;">
+                    <div class="card-body">
+                        <h5 class="card-title">Fecha y Mapa</h5>
+                        <p class="card-text">Fecha de Inicio: {{ viaje.fecha_inicio }}</p>
+                        <p class="card-text">Observaciones: {{ viaje.observaciones }}</p>
+                        <p class="mt-3">La distancia del recorrido es: {{ data_ret.distancia }}</p>
+                        <p class="mt-3">El tiempo estimado de  recorrido es: {{ data_ret.tiempo_viaje }}</p>
+                        {% if mapa %}
+                            {{ mapa|safe }}
+                        {% endif %}
+                        <!-- Agregar botón para unirse al viaje -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Columna 3 - Pasajeros -->
+            <div class="col-lg-4">
+                <div class="card mb-4" id="tarjeta" style="min-height: 470px;">
+                    <div class="card-body">
+                        <h5 class="card-title">Pasajeros</h5>
+                        {% with puestos_maximos=viaje.puestos_maximos %}
+                            {% for _ in numeros %}
+                                <div class="mb-3">
+                                    {% if viaje.pasajeros.all %}
+                                        {% if forloop.counter0 < viaje.pasajeros.count %}
+                                            {# Si hay un pasajero en este puesto, mostrar la información del pasajero #}
+                                            <div class="row">
+                                                <div class="col-4">
+                                                    <img src="{{ viaje.pasajeros.all.forloop.counter0.foto_usuario.url }}" alt="{{ viaje.pasajeros.all.forloop.counter0.username }}" class="img-fluid" style="max-height: 50px;">
+                                                </div>
+                                                <div class="col-8">
+                                                    <p class="card-text">Nombre: {{ viaje.pasajeros.all.forloop.counter0.nombres }} {{ viaje.pasajeros.all.forloop.counter0.apellidos }}</p>
+                                                    <p class="card-text">Calificación: {{ viaje.pasajeros.all.forloop.counter0.calificacion }}</p>
+                                                </div>
+                                            </div>
+                                        {% else %}
+                                            {# Si no hay pasajero en este puesto, mostrar información predeterminada #}
+                                            <img src="{% static 'images/no_foto.jpg' %}" alt="No hay foto de perfil" class="img-fluid" style="max-height: 50px;">
+                                            <p class="card-text">Puesto Vacío</p>
+                                        {% endif %}
+                                    {% else %}
+                                        {# Si no hay pasajeros en el viaje, mostrar información predeterminada #}
+                                        <img src="{% static 'images/no_foto.jpg' %}" alt="No hay foto de perfil" class="img-fluid" style="max-height: 50px;">
+                                        <p class="card-text">Puesto Vacío</p>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        {% endwith %}
+                        <button class="btn btn-success form-control">Unirse al Viaje</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.getElementById('search-form').addEventListener('submit', function() {
+        document.getElementById('search-button').style.display = 'none';
+        document.getElementById('loading-message').style.display = 'block';
+    });
+</script>
+
+<script>
+    // Ocultar el mensaje de error después de 5 segundos (5000 milisegundos)
+    setTimeout(function() {
+      var errorMessage = document.getElementById('login-error-message');
+      if (errorMessage) {
+        errorMessage.style.display = 'none';
+      }
+    }, 5000); // 5000 ms = 5 segundos
+
+    setTimeout(function() {
+      var errorMessage = document.getElementById('lolograste');
+      if (errorMessage) {
+        errorMessage.style.display = 'none';
+      }
+    }, 5000); // 5000 ms = 5 segundos
+  </script>
+{% endblock %}
