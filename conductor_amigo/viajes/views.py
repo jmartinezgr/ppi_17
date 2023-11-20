@@ -21,7 +21,7 @@ from .forms import ViajesForm,CoordenadaForm
 ####Librerias de otras apps
 from usuarios.models import Usuario
 
-
+@login_required
 def ingresar_coordenada(request):
     # Inicializa la variable que contendrá el resultado
     data_ret = None
@@ -112,8 +112,8 @@ def crear_viaje(request):
     # Verifica si hay algún viaje activo o en curso
     if viajes_activos_en_curso.exists():
         # Levanta un error Http404 con un mensaje personalizado
-        raise Http404("No puedes crear un nuevo viaje porque ya tienes uno en estado 'Activo' o 'En curso'.")
-
+        messages.error(request,"Ya tienes un viaje activo!")
+        return redirect('viaje')
     if request.method == 'POST':
         form = ViajesForm(request.POST)
         if form.is_valid():
@@ -179,3 +179,21 @@ def detalle_viaje(request, viaje_id):
     mapa_html = mapa._repr_html_()
 
     return render(request, 'pasajeros/detalle_viaje.html', {'data_ret': data_ret, 'mapa': mapa_html, 'viaje': viaje,'numeros':range(viaje.puestos_maximos)})
+
+@login_required
+def viaje(request):
+    # Obtén el usuario actual
+    usuario = request.user
+
+    # Busca un viaje en el que el usuario sea el conductor o haga parte de los pasajeros
+    viaje = Viaje.objects.filter(Q(conductor=usuario, condicion__in=('Activo', 'En curso')) | Q(pasajeros=usuario, condicion__in=('Activo', 'En curso'))).first()
+
+    if viaje is None:
+        if usuario.rol.name == 'Conductor':
+            messages.error(request, 'No tienes un viaje activo, puedes crear alguno')
+            return redirect('crear_viaje')
+        else:
+            messages.error(request, 'No tienes un viaje activo, puedes unirte a alguno')
+            return redirect('lista_viajes')
+        
+    return redirect('detalle_viaje', viaje_id=viaje.id)

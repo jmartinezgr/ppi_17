@@ -118,26 +118,11 @@
 </div>
 
 <script>
-    document.getElementById('search-form').addEventListener('submit', function() {
-        document.getElementById('search-button').style.display = 'none';
-        document.getElementById('loading-message').style.display = 'block';
-    });
+    setTimeout(function () {
+        var errorMessage = document.getElementById("Errorcito");
+        if (errorMessage) {
+            errorMessage.style.display = "none";
+        }
+    }, 4000);
 </script>
-
-<script>
-    // Ocultar el mensaje de error después de 5 segundos (5000 milisegundos)
-    setTimeout(function() {
-      var errorMessage = document.getElementById('login-error-message');
-      if (errorMessage) {
-        errorMessage.style.display = 'none';
-      }
-    }, 5000); // 5000 ms = 5 segundos
-
-    setTimeout(function() {
-      var errorMessage = document.getElementById('lolograste');
-      if (errorMessage) {
-        errorMessage.style.display = 'none';
-      }
-    }, 5000); // 5000 ms = 5 segundos
-  </script>
 {% endblock %}

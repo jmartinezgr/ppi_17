@@ -44,7 +44,7 @@
                         </li>
                         {% endif %}
                         <li class="nav-item">
-                            <a class="nav-link" href=""> Viaje Activo</a>
+                            <a class="nav-link" href="{% url 'viaje' %}"> Viaje Activo</a>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="funcionalidadesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -105,5 +105,13 @@
         de los estilos css proporcionado por la libreria, permitiendo que la aplicacion pueda ser usada en cualquier dispositivo.
 
     -->
+    <script>
+        setTimeout(function () {
+            var errorMessage = document.getElementById("Errorcito");
+            if (errorMessage) {
+                errorMessage.style.display = "none";
+            }
+        }, 4000);
+    </script>
 </body>
 </html>
