@@ -1,0 +1,52 @@
+{% extends 'layouts/layout.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Crear Nuevo Viaje</h2>
+    <div class="d-flex justify-content-center align-items-center" style="min-height: 70vh;">
+        <form method="post">
+            {% csrf_token %}
+            <div class="card" style="width: 30rem;">
+                <div class="card-body">
+                    <h5 class="card-title">Información del Viaje</h5>
+                    <div class="mb-3">
+                        <label for="{{ form.inicio.id_for_label }}" class="form-label">Lugar de Partida:</label>
+                        {{ form.inicio }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ form.destino.id_for_label }}" class="form-label">Destino:</label>
+                        {{ form.destino }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ form.fecha_inicio.id_for_label }}" class="form-label">Fecha de Inicio:</label>
+                        {{ form.fecha_inicio }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ form.observaciones.id_for_label }}" class="form-label">Observaciones Adicionales:</label>
+                        {{ form.observaciones }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ form.puestos_maximos.id_for_label }}" class="form-label">Puestos Máximos:</label>
+                        {{ form.puestos_maximos }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ form.discapacidades_aceptadas.id_for_label }}" class="form-label">Discapacidades Aceptadas:</label>
+                        {{ form.discapacidades_aceptadas }}
+                    </div>
+                    <button class="btn btn-primary w-100 rounded-pill" type="submit" style="margin-top:20px;">Crear Viaje</button>
+                    <div id="loading-message" style="display: none; margin-top: 10px; text-align: center;">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.getElementById('search-form').addEventListener('submit', function() {
+        document.getElementById('search-button').style.display = 'none';
+        document.getElementById('loading-message').style.display = 'block';
+    });
+</script>
+
+{% endblock %}

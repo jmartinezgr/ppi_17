@@ -15,7 +15,15 @@ class Viaje(models.Model):
         ('Cancelado', 'Cancelado'),
     )
 
-    destino = models.CharField('Destino', max_length=100)
+    INCAPACIDAD_CHOICES = [
+        ('ninguna', 'Ninguna'),
+        ('silla_de_ruedas', 'Silla de ruedas'),
+        ('muletas', 'Muletas'),
+        ('vision_reducida', 'Visión reducida'),
+    ]
+
+    inicio = models.CharField('Lugar de Partida',max_length=200,default=(6.260699999606895, -75.57953881377448))
+    destino = models.CharField('Destino', max_length=200)
     conductor = models.ForeignKey(Usuario, related_name='viajes_conducidos', on_delete=models.CASCADE)
     pasajeros = models.ManyToManyField(Usuario, related_name='viajes_realizados', blank=True)
     observaciones = models.TextField('Observaciones', blank=True)
@@ -23,6 +31,7 @@ class Viaje(models.Model):
     fecha_fin = models.DateTimeField('Fecha de Finalización', null=True, blank=True)
     condicion = models.CharField('Condición del Viaje', max_length=23, choices=CONDICIONES_VIAJE, default='Activo')
     puestos_maximos = models.IntegerField('Puestos Máximos', default=1)
+    discpacidades = models.CharField('Discapacidades Aceptadas',choices=INCAPACIDAD_CHOICES,default='ninguna',max_length=30)
 
     def __str__(self):
         """

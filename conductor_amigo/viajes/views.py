@@ -1,16 +1,22 @@
 # Este código utiliza el framework Django para desarrollo web.
 # Contiene vistas y funcionalidades relacionadas con la gestión de usuarios y viajes.
 
+####Librerias del Framework
 from django.shortcuts import render, redirect
 import folium
-from .forms import CoordenadaForm
-from utils.calcular_distancia import calcular_punto_medio
-from utils.obtener_coordenadas import calcular_distancia_tiempo
-# import GOOGLE_MAPS_API_KEY desde settings.py
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-import folium
 
+#Librerias de Terceros
+from utils.calcular_distancia import calcular_punto_medio
+from utils.obtener_coordenadas import calcular_distancia_tiempo
+
+import folium
+####Librerias de la app
+from .models import Viaje
+from .forms import ViajesForm,CoordenadaForm
+####Librerias de otras apps
+from usuarios.models import Usuario
 
 def ingresar_coordenada(request):
     # Inicializa la variable que contendrá el resultado
@@ -126,3 +132,39 @@ def detalle_viaje(request):
 
     context = {'viaje': viaje}
     return render(request, 'conductores/viaje.html', context)
+
+def crear_viaje(request):
+    if request.method == 'POST':
+        form = ViajesForm(request.POST)
+        if form.is_valid():
+            # Procesar el formulario y crear el objeto Viaje
+            inicio = form.cleaned_data['inicio']
+            destino = form.cleaned_data['destino']
+            coordenadas_destino = form.cleaned_data['coordenadas_destino']
+            fecha_inicio = form.cleaned_data['fecha_inicio']
+            observaciones = form.cleaned_data['observaciones']
+            puestos_maximos = form.cleaned_data['puestos_maximos']
+            discapacidades_aceptadas = form.cleaned_data['discapacidades_aceptadas']
+
+            conductor = Usuario.objects.get(username=request.user.username)
+            
+            viaje = Viaje.objects.create(
+                inicio=inicio,
+                destino=destino,
+                coordenadas_destino=coordenadas_destino,
+                conductor=conductor,
+                fecha_inicio=fecha_inicio,
+                observaciones=observaciones,
+                puestos_maximos=puestos_maximos,
+                discapacidades=discapacidades_aceptadas,
+            )
+
+            # Redirigir a alguna página de éxito o detalles del viaje
+            return redirect('detalle_viaje', viaje_id=viaje.id)
+        else:
+            messages.error(request, 'Error en el formulario. Por favor, revise los campos.')
+
+    else:
+        form = ViajesForm()
+
+    return render(request, 'conductores/crear_viaje.html', {'form': form})
