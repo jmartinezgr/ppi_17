@@ -6,6 +6,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 import folium
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
+from django.utils import timezone
 ####Librerias de Terceros
 from utils.calcular_distancia import calcular_punto_medio
 from utils.obtener_coordenadas import calcular_distancia_tiempo
@@ -66,10 +68,9 @@ def ingresar_coordenada(request):
     # Renderiza la plantilla 'rutas_similares.html' con el formulario y el resultado
     return render(request, 'conductores/rutas_similares.html', {'form': form, 'data_ret': data_ret, 'mapa': mapa_html })
 
-@login_required
 def lista_viajes(request):
     """
-    Vista para mostrar una lista de viajes.
+    Vista para mostrar una lista de viajes activos ordenados por fecha de inicio.
 
     Args:
         request: Solicitud HTTP enviada por el cliente.
@@ -77,36 +78,24 @@ def lista_viajes(request):
     Returns:
         Renderiza la plantilla 'pasajeros/lista_viajes.html' con la lista de viajes.
     """
+    # Obtener viajes activos ordenados por fecha de inicio
+    viajes_activos = Viaje.objects.filter(
+        Q(condicion='Activo')
+    ).order_by('fecha_inicio')
+
+    # Preparar datos para el contexto
     viajes = [
         {
-            'conductor': 'Juan Pérez',
-            'destino': 'Plaza Principal',
-            'hora_salida': '09:00 AM',
-        },
-        {
-            'conductor': 'María González',
-            'destino': 'Parque Central',
-            'hora_salida': '10:30 AM',
-        },
-        {
-            'conductor': 'Carlos Rodríguez',
-            'destino': 'Estación de Tren',
-            'hora_salida': '12:15 PM',
-        },
-        {
-            'conductor': 'Laura Martínez',
-            'destino': 'Centro Comercial',
-            'hora_salida': '02:00 PM',
-        },
-        {
-            'conductor': 'Pedro Sánchez',
-            'destino': 'Museo de Arte',
-            'hora_salida': '03:45 PM',
-        },
+            'conductor': viaje.conductor.username,  # Asumiendo que el conductor es un usuario
+            'destino': viaje.destino,
+            'hora_salida': viaje.fecha_inicio.strftime('%I:%M %p'),
+            'id':viaje.id
+        }
+        for viaje in viajes_activos
     ]
 
     context = {'viajes': viajes}
-    return render(request, 'pasajeros/lista_viajes.html', context)
+    return render(request, 'pasajeros/lista_viajes.html', context)  
 """
 @login_required
 def detalle_viaje(request):
