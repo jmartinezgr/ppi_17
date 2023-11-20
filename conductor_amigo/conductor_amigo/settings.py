@@ -30,7 +30,7 @@ SECRET_KEY = 'django-insecure-$p(ujrx(ujokvbi_p$fv3#q2&$h)6rd$3yh&3(#gernwqw@q2o
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['UnconductorAmigo.pythonanywhere.com']
 
 # Application definition
 
@@ -133,8 +133,11 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
     ]
 
+STATIC_ROOT = 'home/UNconductorAmigo/ppi_17/conductor_amigo/static'
+
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+#MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = 'home/UNconductorAmigo/ppi_17/conductor_amigo/media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -144,5 +147,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
 # Google Maps API Key
-GOOGLE_MAPS_API_KEY = 'AIzaSyBLOVY8AzGli3GfTZ6uq7nCFTvsZSqKrUc' 
+GOOGLE_MAPS_API_KEY = 'AIzaSyBLOVY8AzGli3GfTZ6uq7nCFTvsZSqKrUc'
 BASE_COUNTRY = "CO" # Colombia
