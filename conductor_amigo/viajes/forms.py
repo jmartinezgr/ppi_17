@@ -69,6 +69,7 @@ class ViajesForm(forms.Form):
     puestos_maximos = forms.IntegerField(
         label="Puestos Máximos",
         initial=1,
+        max_value=4,
         widget=forms.NumberInput(attrs={'class': 'form-control rounded-pill'}),
     )
 
