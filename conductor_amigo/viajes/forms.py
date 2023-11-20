@@ -78,12 +78,3 @@ class ViajesForm(forms.Form):
         label="Discapacidades Aceptadas",
         widget=forms.Select(attrs={'class': 'form-control rounded-pill'}),
     )
-
-    def clean_fecha_inicio(self):
-        fecha_inicio = self.cleaned_data.get('fecha_inicio')
-
-        # Verifica si la fecha de inicio es en el futuro
-        if fecha_inicio and fecha_inicio < timezone.now():
-            raise forms.ValidationError("La fecha de inicio debe ser en el futuro.")
-
-        return fecha_inicio

@@ -2,15 +2,15 @@
 # Contiene vistas y funcionalidades relacionadas con la gestión de usuarios y viajes.
 
 ####Librerias del Framework
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 import folium
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-
-#Librerias de Terceros
+####Librerias de Terceros
 from utils.calcular_distancia import calcular_punto_medio
 from utils.obtener_coordenadas import calcular_distancia_tiempo
-
+####Librerias de Python
+from datetime import datetime
 import folium
 ####Librerias de la app
 from .models import Viaje
@@ -107,10 +107,10 @@ def lista_viajes(request):
 
     context = {'viajes': viajes}
     return render(request, 'pasajeros/lista_viajes.html', context)
-
+"""
 @login_required
 def detalle_viaje(request):
-    """
+    
     Vista para mostrar detalles de un viaje.
 
     Args:
@@ -118,7 +118,7 @@ def detalle_viaje(request):
 
     Returns:
         Renderiza la plantilla 'conductores/viaje.html' con los detalles del viaje.
-    """
+
     viaje = {
         'nombre_conductor': 'Juan Pérez',
         'nombre_usuario': 'María González',
@@ -132,28 +132,34 @@ def detalle_viaje(request):
 
     context = {'viaje': viaje}
     return render(request, 'conductores/viaje.html', context)
-
+"""
+@login_required
 def crear_viaje(request):
+    if request.user.rol == 'Pasajero':
+        raise 
+    
     if request.method == 'POST':
         form = ViajesForm(request.POST)
         if form.is_valid():
             # Procesar el formulario y crear el objeto Viaje
             inicio = form.cleaned_data['inicio']
             destino = form.cleaned_data['destino']
-            coordenadas_destino = form.cleaned_data['coordenadas_destino']
-            fecha_inicio = form.cleaned_data['fecha_inicio']
+            fecha_inicio_str = form.cleaned_data['fecha_inicio']
             observaciones = form.cleaned_data['observaciones']
             puestos_maximos = form.cleaned_data['puestos_maximos']
             discapacidades_aceptadas = form.cleaned_data['discapacidades_aceptadas']
+
+            print(puestos_maximos)
+            print(fecha_inicio_str)
+            print(destino)
 
             conductor = Usuario.objects.get(username=request.user.username)
             
             viaje = Viaje.objects.create(
                 inicio=inicio,
                 destino=destino,
-                coordenadas_destino=coordenadas_destino,
                 conductor=conductor,
-                fecha_inicio=fecha_inicio,
+                fecha_inicio=fecha_inicio_str,
                 observaciones=observaciones,
                 puestos_maximos=puestos_maximos,
                 discapacidades=discapacidades_aceptadas,
@@ -161,10 +167,39 @@ def crear_viaje(request):
 
             # Redirigir a alguna página de éxito o detalles del viaje
             return redirect('detalle_viaje', viaje_id=viaje.id)
+            
         else:
             messages.error(request, 'Error en el formulario. Por favor, revise los campos.')
+            print(form.errors)
 
     else:
         form = ViajesForm()
 
     return render(request, 'conductores/crear_viaje.html', {'form': form})
+
+@login_required
+def detalle_viaje(request, viaje_id):
+    viaje = get_object_or_404(Viaje, id=viaje_id)
+
+    data_ret = None
+    mapa_html = None
+
+    mapa = folium.Map(location=[0, 0], zoom_start=12)
+    # Procesa los datos si el formulario es válido
+    selected_option = viaje.inicio
+    selected_option_2 = viaje.destino
+
+    start_coord = eval(selected_option)
+    end_coord = eval(selected_option_2)
+            
+    punto_medio = calcular_punto_medio(start_coord[0], start_coord[1], end_coord[0], end_coord[1])
+            
+    data_ret = calcular_distancia_tiempo(start_coord, end_coord)
+            
+    mapa = folium.Map(location=punto_medio, zoom_start=15)
+    folium.Marker([start_coord[0], start_coord[1]], popup='Coordenada 1').add_to(mapa)
+    folium.Marker([end_coord[0], end_coord[1]], popup='Coordenada 2').add_to(mapa)
+
+    mapa_html = mapa._repr_html_()
+
+    return render(request, 'pasajeros/detalle_viaje.html', {'data_ret': data_ret, 'mapa': mapa_html, 'viaje': viaje,'numeros':range(viaje.puestos_maximos)})
