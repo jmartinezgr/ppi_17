@@ -34,9 +34,15 @@
                         <li class="nav-item">
                             <a class="nav-link" href={% url "home" %}> Inicio </a>
                         </li>
+                        {% if user.rol.name == 'Conductor' %}
+                        <li class="nav-item">
+                            <a class="nav-link" href={% url "crear_viaje" %}> Crear Viaje</a>
+                        </li>
+                        {% else %}
                         <li class="nav-item">
                             <a class="nav-link" href={% url "lista_viajes" %}> Viajes Disponibles </a>
                         </li>
+                        {% endif %}
                         <li class="nav-item">
                             <a class="nav-link" href=""> Viaje Activo</a>
                         </li>
