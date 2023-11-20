@@ -12,7 +12,7 @@
         {% csrf_token %}
         <div class="row">
             <!-- Columna 1 - Conductor -->
-            <div class="col-lg-4" >
+            <div class="col-lg-4">
                 <div class="card mb-4" id="tarjeta" style="min-height: 470px;">
                     <div class="card-body">
                         <h5 class="card-title">Conductor</h5>
@@ -21,9 +21,35 @@
                         {% else %}
                             <img src="{% static 'images/no_foto.jpg' %}" alt="No hay foto de perfil" style="max-height: 150px;">
                         {% endif %}
-                        <p class="card-text">Nombre: {{ viaje.conductor.nombres }} {{ viaje.conductor.apellidos }}</p>
+                        <p class="card-text">Nombre: 
+                            {% if viaje.conductor == request.user %}
+                                {{ viaje.conductor.nombres }} {{ viaje.conductor.apellidos }} (Tú)
+                            {% else %}
+                                {{ viaje.conductor.nombres }} {{ viaje.conductor.apellidos }}
+                            {% endif %}
+                        </p>
                         <p class="card-text">Calificación: {{ viaje.conductor.calificacion }}</p>
                         <p class="card-text">Descripción: {{ viaje.conductor.bibliografia }}</p>
+                        
+                        {% if viaje.conductor == request.user %}
+                            {% if viaje.condicion == 'Activo' or viaje.condicion == 'A la espera de arranque' %}
+                                <button class="btn btn-danger form-control">Cancelar Viaje</button>
+                            {% elif viaje.condicion == 'En curso' %}
+                                <button class="btn btn-danger form-control">Finalizar Viaje</button>
+                            {% elif viaje.condicion == 'Finalizado' %}
+                                <p class="text-muted">Viaje Finalizado</p>
+                            {% endif %}
+                        {% else %}
+                            {% if viaje.condicion == 'Activo' or viaje.condicion == 'A la espera de arranque' %}
+                                <button class="btn btn-success form-control">Iniciar Viaje</button>
+                            {% elif viaje.condicion == 'En curso' %}
+                                <button class="btn btn-danger form-control">Finalizar Viaje</button>
+                            {% elif viaje.condicion == 'Finalizado' %}
+                                <p class="text-muted">Viaje Finalizado</p>
+                            {% endif %}
+                            
+                            <button class="btn btn-secondary form-control">Cancelar Viaje</button>
+                        {% endif %}
                     </div>
                 </div>
             </div>
