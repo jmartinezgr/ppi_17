@@ -61,7 +61,11 @@
                                                     <img src="{{ viaje.pasajeros.all.forloop.counter0.foto_usuario.url }}" alt="{{ viaje.pasajeros.all.forloop.counter0.username }}" class="img-fluid" style="max-height: 50px;">
                                                 </div>
                                                 <div class="col-8">
-                                                    <p class="card-text">Nombre: {{ viaje.pasajeros.all.forloop.counter0.nombres }} {{ viaje.pasajeros.all.forloop.counter0.apellidos }}</p>
+                                                    <p class="card-text">Nombre: {{ viaje.pasajeros.all.forloop.counter0.nombres }} {{ viaje.pasajeros.all.forloop.counter0.apellidos }}
+                                                        {% if viaje.pasajeros.all.forloop.counter0 == request.user %}
+                                                            (Tú)
+                                                        {% endif %}
+                                                    </p>
                                                     <p class="card-text">Calificación: {{ viaje.pasajeros.all.forloop.counter0.calificacion }}</p>
                                                 </div>
                                             </div>
@@ -78,7 +82,12 @@
                                 </div>
                             {% endfor %}
                         {% endwith %}
-                        <button class="btn btn-success form-control">Unirse al Viaje</button>
+                        
+                        {% if user_passenger %}
+                            <button class="btn btn-success form-control">Enviar mensaje al conductor</button>
+                        {% else %}
+                            <button class="btn btn-success form-control">Unirse al Viaje</button>
+                        {% endif %}
                     </div>
                 </div>
             </div>

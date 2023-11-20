@@ -147,6 +147,8 @@ class Usuario(AbstractBaseUser):
             MaxValueValidator(5)
             ]
         )
+    
+    num_calificacionones = models.PositiveIntegerField(default=0)
 
     USERNAME_FIELD = 'username'
 
