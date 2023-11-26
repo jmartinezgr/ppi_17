@@ -430,35 +430,56 @@ class ProfilePasswordChangeView(PasswordChangeView):
 
 @login_required
 def calificar_usuario(request, username):
+    """
+    Vista para calificar a un usuario. Requiere autenticación.
+
+    Parameters:
+    - request: La solicitud HTTP.
+    - username: El nombre de usuario del usuario a calificar.
+
+    Returns:
+    - Si la solicitud es un POST y el formulario es válido, redirecciona al perfil del usuario calificado.
+    - Si la solicitud no es un POST, muestra el formulario de calificación vacío.
+    """
+    # Obtener el usuario calificado y el calificador
     calificado = get_object_or_404(Usuario, username=username)
     calificador = request.user
 
     if request.method == 'POST':
+        # Procesar el formulario si la solicitud es un POST
         form = CalificacionForm(request.POST, user_role=calificado.rol_id)
         if form.is_valid():
+            # Guardar la calificación y actualizar los promedios
             calificacion = form.save(commit=False)
             calificacion.calificador = calificador
             calificacion.calificado = calificado
             calificacion.save()
 
-            # Actualizar los promedios en el usuario calificado
             actualizar_promedios(calificado)
 
             return redirect('profile', username=username)
     else:
+        # Mostrar un formulario vacío si la solicitud no es un POST
         form = CalificacionForm(user_role=calificado.rol_id)
 
+    # Renderizar la plantilla con el formulario y el usuario calificado
     return render(request, 'pasajeros/calificar.html', {'form': form, 'calificado': calificado})
 
 def actualizar_promedios(usuario):
-    # Obtener todas las calificaciones para el usuario
+    """
+    Actualiza los promedios de un usuario basado en sus calificaciones.
+
+    Parameters:
+    - usuario: El objeto de usuario cuyos promedios se deben actualizar.
+    """
+    # Obtener todas las calificaciones para el usuario dado
     calificaciones = Calificacion.objects.filter(calificado=usuario)
 
-    # Inicializar sumas y conteos para calcular promedios
+    # Inicializar variables para calcular los promedios
     suma_manejo = suma_higiene = suma_charla = suma_puntualidad = suma_general = 0
     conteo_manejo = conteo_higiene = conteo_charla = conteo_puntualidad = conteo_general = 0
 
-    # Calcular sumas y conteos por categoría
+    # Iterar sobre todas las calificaciones y actualizar las sumas y conteos
     for calificacion in calificaciones:
         if calificacion.categoria == 'Manejo':
             suma_manejo += int(calificacion.calificacion)
@@ -476,12 +497,12 @@ def actualizar_promedios(usuario):
             suma_general += int(calificacion.calificacion)
             conteo_general += 1
 
-    # Calcular promedios y actualizar en el usuario
+    # Calcular promedios y actualizar el objeto usuario
     usuario.promedio_manejo = suma_manejo / conteo_manejo if conteo_manejo != 0 else 0
     usuario.promedio_higiene = suma_higiene / conteo_higiene if conteo_higiene != 0 else 0
     usuario.promedio_charla = suma_charla / conteo_charla if conteo_charla != 0 else 0
     usuario.promedio_puntualidad = suma_puntualidad / conteo_puntualidad if conteo_puntualidad != 0 else 0
     usuario.promedio_general = suma_general / conteo_general if conteo_general != 0 else 0
 
-    # Guardar cambios en el usuario
+    # Guardar los cambios en el objeto usuario
     usuario.save()

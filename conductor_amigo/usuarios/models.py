@@ -224,6 +224,12 @@ class Usuario(AbstractBaseUser):
     promedio_general = models.FloatField(default=0)
 
     def actualizar_promedios(self):
+        """
+        Actualiza los promedios del usuario basado en sus calificaciones.
+
+        Obtener todas las calificaciones para el usuario, calcular sumas y conteos por categoría,
+        calcular promedios y actualizar en el objeto usuario.
+        """
         # Obtener todas las calificaciones para el usuario
         calificaciones = Calificacion.objects.filter(calificado=self)
 
@@ -276,7 +282,9 @@ class Role(models.Model):
         """
         return self.name
 
+
 class Calificacion(models.Model):
+    # Definición de las opciones de calificación
     CALIFICACION_CHOICES = [
         ('1', '1'),
         ('2', '2'),
@@ -285,46 +293,54 @@ class Calificacion(models.Model):
         ('5', '5'),
     ]
 
+    # Definición de las opciones de categoría
     OPCIONES_CHOICES = [
         ('Manejo', 'Manejo'),
-        ('Higiene', 'Higiene del vehiculo'),
+        ('Higiene', 'Higiene del vehículo'),
         ('Charla', 'Buena Charla'),
         ('Puntualidad', 'Puntualidad'),
         ('General', 'General'),
     ]
 
+    # Definición de las opciones de categoría para conductores
     CONDUCTOR_CATEGORIA_CHOICES = [
         ('Manejo', 'Manejo'),
-        ('Higiene', 'Higiene del vehiculo'),
+        ('Higiene', 'Higiene del vehículo'),
         ('Charla', 'Buena Charla'),
         ('Puntualidad', 'Puntualidad'),
         ('General', 'General'),
     ]
 
+    # Definición de las opciones de categoría para pasajeros
     PASAJERO_CATEGORIA_CHOICES = [
         ('Charla', 'Buena charla'),
         ('Puntualidad', 'Puntualidad'),
         ('General', 'General'),
     ]
 
+    # Campos del modelo
     calificador = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='calificador')
     calificado = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='calificado')
     categoria = models.CharField(max_length=50, choices=OPCIONES_CHOICES)
     calificacion = models.CharField(max_length=1, choices=CALIFICACION_CHOICES)
 
     def __str__(self):
+        # Representación en cadena del objeto
         return f'{self.calificador} calificó a {self.calificado} en {self.categoria} con {self.calificacion} puntos'
 
     def save(self, *args, **kwargs):
-        # Personaliza las opciones de categoría según el rol del calificado
-        if self.calificado.rol_id == 2:  # Rol del conductor
+        # Método para personalizar la lógica de guardado del objeto
+        if self.calificado.rol_id == 2:
+            # Si el calificado es un conductor, ajustar la categoría utilizando las opciones para conductores
             self.categoria = self.clean_choice(self.categoria, self.CONDUCTOR_CATEGORIA_CHOICES)
-        elif self.calificado.rol_id == 1:  # Rol del pasajero
+        elif self.calificado.rol_id == 1:
+            # Si el calificado es un pasajero, ajustar la categoría utilizando las opciones para pasajeros
             self.categoria = self.clean_choice(self.categoria, self.PASAJERO_CATEGORIA_CHOICES)
 
+        # Llamar al método de guardado del modelo base
         super(Calificacion, self).save(*args, **kwargs)
 
     def clean_choice(self, selected_choice, valid_choices):
-        # Limpia la opción seleccionada asegurándose de que sea una opción válida
+        # Método para limpiar la opción seleccionada, utilizando la primera opción válida si no hay coincidencias
         clean_choice = next((choice[0] for choice in valid_choices if choice[0] == selected_choice), None)
-        return clean_choice or valid_choices[0][0]  # Usa la primera opción si no es válida
+        return clean_choice or valid_choices[0][0]
