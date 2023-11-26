@@ -317,30 +317,60 @@ class ProfilePasswordChangeView(PasswordChangeView):
         )
         return super().form_invalid(form)
 
-class CalificacionView(View):
-    template_name = 'pasajeros/calificar.html'
+@login_required
+def calificar_usuario(request, username):
+    calificado = get_object_or_404(Usuario, username=username)
+    calificador = request.user
 
-    def get(self, request, username):
-        usuario_calificado = Usuario.objects.get(username=username)
-        form = CalificacionForm()
-        return render(request, self.template_name, {'usuario_calificado': usuario_calificado, 'form': form})
-
-    def post(self, request, username):
-        usuario_calificado = Usuario.objects.get(username=username)
-        form = CalificacionForm(request.POST)
-
-        # Verificar si el usuario ya ha sido calificado por el calificador actual
-        if Calificacion.objects.filter(calificador=request.user, usuario_calificado=usuario_calificado).exists():
-            messages.error(request, 'Ya has calificado a este usuario anteriormente.')
-            return redirect('profile', username=username)
-
+    if request.method == 'POST':
+        form = CalificacionForm(request.POST, user_role=calificado.rol_id)
         if form.is_valid():
             calificacion = form.save(commit=False)
-            calificacion.calificador = request.user
-            calificacion.usuario_calificado = usuario_calificado
+            calificacion.calificador = calificador
+            calificacion.calificado = calificado
             calificacion.save()
-            return redirect('profile', username=username)
-        else:
-            print(f"Form errors: {form.errors}")
 
-        return render(request, self.template_name, {'usuario_calificado': usuario_calificado, 'form': form})
+            # Actualizar los promedios en el usuario calificado
+            actualizar_promedios(calificado)
+
+            return redirect('profile', username=username)
+    else:
+        form = CalificacionForm(user_role=calificado.rol_id)
+
+    return render(request, 'pasajeros/calificar.html', {'form': form, 'calificado': calificado})
+
+def actualizar_promedios(usuario):
+    # Obtener todas las calificaciones para el usuario
+    calificaciones = Calificacion.objects.filter(calificado=usuario)
+
+    # Inicializar sumas y conteos para calcular promedios
+    suma_manejo = suma_higiene = suma_charla = suma_puntualidad = suma_general = 0
+    conteo_manejo = conteo_higiene = conteo_charla = conteo_puntualidad = conteo_general = 0
+
+    # Calcular sumas y conteos por categoría
+    for calificacion in calificaciones:
+        if calificacion.categoria == 'Manejo':
+            suma_manejo += int(calificacion.calificacion)
+            conteo_manejo += 1
+        elif calificacion.categoria == 'Higiene':
+            suma_higiene += int(calificacion.calificacion)
+            conteo_higiene += 1
+        elif calificacion.categoria == 'Charla':
+            suma_charla += int(calificacion.calificacion)
+            conteo_charla += 1
+        elif calificacion.categoria == 'Puntualidad':
+            suma_puntualidad += int(calificacion.calificacion)
+            conteo_puntualidad += 1
+        elif calificacion.categoria == 'General':
+            suma_general += int(calificacion.calificacion)
+            conteo_general += 1
+
+    # Calcular promedios y actualizar en el usuario
+    usuario.promedio_manejo = suma_manejo / conteo_manejo if conteo_manejo != 0 else 0
+    usuario.promedio_higiene = suma_higiene / conteo_higiene if conteo_higiene != 0 else 0
+    usuario.promedio_charla = suma_charla / conteo_charla if conteo_charla != 0 else 0
+    usuario.promedio_puntualidad = suma_puntualidad / conteo_puntualidad if conteo_puntualidad != 0 else 0
+    usuario.promedio_general = suma_general / conteo_general if conteo_general != 0 else 0
+
+    # Guardar cambios en el usuario
+    usuario.save()

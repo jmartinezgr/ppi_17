@@ -277,10 +277,13 @@ class CustomPasswordChangeForm(PasswordChangeForm):
 class CalificacionForm(forms.ModelForm):
     class Meta:
         model = Calificacion
-        fields = ['puntuacion']
+        fields = ['categoria', 'calificacion']
 
-    def clean_puntuacion(self):
-        puntuacion = self.cleaned_data['puntuacion']
-        if puntuacion < 1 or puntuacion > 5:
-            raise forms.ValidationError('La puntuación debe estar entre 1 y 5.')
-        return puntuacion
+    def __init__(self, *args, **kwargs):
+        user_role = kwargs.pop('user_role', None)
+        super(CalificacionForm, self).__init__(*args, **kwargs)
+
+        if user_role == 2:  # Ajusta según el ID del rol del conductor
+            self.fields['categoria'].choices = Calificacion.CONDUCTOR_CATEGORIA_CHOICES
+        elif user_role == 1:  # Ajusta según el ID del rol del pasajero
+            self.fields['categoria'].choices = Calificacion.PASAJERO_CATEGORIA_CHOICES

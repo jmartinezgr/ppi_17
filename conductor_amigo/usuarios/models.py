@@ -147,8 +147,6 @@ class Usuario(AbstractBaseUser):
             MaxValueValidator(5)
             ]
         )
-    
-    num_calificacionones = models.PositiveIntegerField(default=0)
 
     USERNAME_FIELD = 'username'
 
@@ -219,12 +217,46 @@ class Usuario(AbstractBaseUser):
         """
         self.password = make_password(raw_password)
 
-    def actualizar_calificacion(self):
-        calificacion = self.calificaciones_recibidas.all()
-        total_puntuacion = sum([calificacion.puntuacion for calificacion in calificacion])
-        cantidad_calificaciones = len(calificacion)
-        self.calificacion = total_puntuacion / cantidad_calificaciones if cantidad_calificaciones > 0 else 0
-        self.num_calificacion = cantidad_calificaciones
+    promedio_manejo = models.FloatField(default=0)
+    promedio_higiene = models.FloatField(default=0)
+    promedio_charla = models.FloatField(default=0)
+    promedio_puntualidad = models.FloatField(default=0)
+    promedio_general = models.FloatField(default=0)
+
+    def actualizar_promedios(self):
+        # Obtener todas las calificaciones para el usuario
+        calificaciones = Calificacion.objects.filter(calificado=self)
+
+        # Inicializar sumas y conteos para calcular promedios
+        suma_manejo = suma_higiene = suma_charla = suma_puntualidad = suma_general = 0
+        conteo_manejo = conteo_higiene = conteo_charla = conteo_puntualidad = conteo_general = 0
+
+        # Calcular sumas y conteos por categoría
+        for calificacion in calificaciones:
+            if calificacion.categoria == 'Manejo':
+                suma_manejo += int(calificacion.calificacion)
+                conteo_manejo += 1
+            elif calificacion.categoria == 'Higiene del vehiculo':
+                suma_higiene += int(calificacion.calificacion)
+                conteo_higiene += 1
+            elif calificacion.categoria == 'Buena Charla':
+                suma_charla += int(calificacion.calificacion)
+                conteo_charla += 1
+            elif calificacion.categoria == 'Puntualidad':
+                suma_puntualidad += int(calificacion.calificacion)
+                conteo_puntualidad += 1
+            elif calificacion.categoria == 'General':
+                suma_general += int(calificacion.calificacion)
+                conteo_general += 1
+
+        # Calcular promedios y actualizar en el usuario
+        self.promedio_manejo = suma_manejo / conteo_manejo if conteo_manejo != 0 else 0
+        self.promedio_higiene = suma_higiene / conteo_higiene if conteo_higiene != 0 else 0
+        self.promedio_charla = suma_charla / conteo_charla if conteo_charla != 0 else 0
+        self.promedio_puntualidad = suma_puntualidad / conteo_puntualidad if conteo_puntualidad != 0 else 0
+        self.promedio_general = suma_general / conteo_general if conteo_general != 0 else 0
+
+        # Guardar cambios en el usuario
         self.save()
 
 
@@ -245,13 +277,54 @@ class Role(models.Model):
         return self.name
 
 class Calificacion(models.Model):
-    calificador = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='calificaciones_hechas')
-    usuario_calificado = models.ForeignKey('usuarios.Usuario', on_delete=models.CASCADE, related_name='calificaciones_recibidas')
-    puntuacion = models.PositiveIntegerField()
+    CALIFICACION_CHOICES = [
+        ('1', '1'),
+        ('2', '2'),
+        ('3', '3'),
+        ('4', '4'),
+        ('5', '5'),
+    ]
 
-    class Meta:
-        unique_together = ['calificador', 'usuario_calificado']
+    OPCIONES_CHOICES = [
+        ('Manejo', 'Manejo'),
+        ('Higiene', 'Higiene del vehiculo'),
+        ('Charla', 'Buena Charla'),
+        ('Puntualidad', 'Puntualidad'),
+        ('General', 'General'),
+    ]
+
+    CONDUCTOR_CATEGORIA_CHOICES = [
+        ('Manejo', 'Manejo'),
+        ('Higiene', 'Higiene del vehiculo'),
+        ('Charla', 'Buena Charla'),
+        ('Puntualidad', 'Puntualidad'),
+        ('General', 'General'),
+    ]
+
+    PASAJERO_CATEGORIA_CHOICES = [
+        ('Charla', 'Buena charla'),
+        ('Puntualidad', 'Puntualidad'),
+        ('General', 'General'),
+    ]
+
+    calificador = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='calificador')
+    calificado = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='calificado')
+    categoria = models.CharField(max_length=50, choices=OPCIONES_CHOICES)
+    calificacion = models.CharField(max_length=1, choices=CALIFICACION_CHOICES)
+
+    def __str__(self):
+        return f'{self.calificador} calificó a {self.calificado} en {self.categoria} con {self.calificacion} puntos'
 
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        self.usuario_calificado.actualizar_calificacion()
+        # Personaliza las opciones de categoría según el rol del calificado
+        if self.calificado.rol_id == 2:  # Rol del conductor
+            self.categoria = self.clean_choice(self.categoria, self.CONDUCTOR_CATEGORIA_CHOICES)
+        elif self.calificado.rol_id == 1:  # Rol del pasajero
+            self.categoria = self.clean_choice(self.categoria, self.PASAJERO_CATEGORIA_CHOICES)
+
+        super(Calificacion, self).save(*args, **kwargs)
+
+    def clean_choice(self, selected_choice, valid_choices):
+        # Limpia la opción seleccionada asegurándose de que sea una opción válida
+        clean_choice = next((choice[0] for choice in valid_choices if choice[0] == selected_choice), None)
+        return clean_choice or valid_choices[0][0]  # Usa la primera opción si no es válida
