@@ -33,26 +33,26 @@ def ingresar_coordenada(request):
     if request.method == 'POST':
         # Crea un formulario a partir de los datos POST
         form = CoordenadaForm(request.POST)
-        
-        
+
+
         if form.is_valid():
             # Procesa los datos si el formulario es válido
-           
+
             selected_option = form.cleaned_data.get('starting_place_type')
-            
+
             # Busca las coordenadas correspondientes a la opción seleccionada
-            
+
             selected_option_2 = form.cleaned_data.get('ending_place_type')
 
             # convertir selected_option a coordenadas
             start_coord = eval(selected_option)
             end_coord = eval(selected_option_2)
-            
+
             punto_medio = calcular_punto_medio(start_coord[0], start_coord[1], end_coord[0], end_coord[1])
-            
+
             # Calcula la distancia usando las coordenadas del usuario y las coordenadas temporales
             data_ret = calcular_distancia_tiempo(start_coord, end_coord)
-            
+
             # Crear el mapa de Folium
             mapa = folium.Map(location=punto_medio, zoom_start=15)
             folium.Marker([start_coord[0], start_coord[1]], popup='Coordenada 1').add_to(mapa)
@@ -98,13 +98,13 @@ def lista_viajes(request):
     ]
 
     context = {'viajes': viajes}
-    return render(request, 'pasajeros/lista_viajes.html', context)  
+    return render(request, 'pasajeros/lista_viajes.html', context)
 
 @login_required
 def crear_viaje(request):
     if request.user.rol == 'Pasajero':
         raise Http404('Si quieres crear un viaje cambia tu perfil a conductor')
-    
+
     usuario_pre = Usuario.objects.get(username=request.user.username)
 
     viajes_activos_en_curso = Viaje.objects.filter(conductor=usuario_pre, condicion__in=('Activo', 'En curso'))
@@ -130,7 +130,7 @@ def crear_viaje(request):
             print(destino)
 
             conductor = Usuario.objects.get(username=request.user.username)
-            
+
             viaje = Viaje.objects.create(
                 inicio=inicio,
                 destino=destino,
@@ -143,7 +143,7 @@ def crear_viaje(request):
 
             # Redirigir a alguna página de éxito o detalles del viaje
             return redirect('detalle_viaje', viaje_id=viaje.id)
-            
+
         else:
             messages.error(request, 'Error en el formulario. Por favor, revise los campos.')
             print(form.errors)
@@ -167,11 +167,11 @@ def detalle_viaje(request, viaje_id):
 
     start_coord = eval(selected_option)
     end_coord = eval(selected_option_2)
-            
+
     punto_medio = calcular_punto_medio(start_coord[0], start_coord[1], end_coord[0], end_coord[1])
-            
+
     data_ret = calcular_distancia_tiempo(start_coord, end_coord)
-            
+
     mapa = folium.Map(location=punto_medio, zoom_start=15)
     folium.Marker([start_coord[0], start_coord[1]], popup='Coordenada 1').add_to(mapa)
     folium.Marker([end_coord[0], end_coord[1]], popup='Coordenada 2').add_to(mapa)
@@ -195,25 +195,25 @@ def viaje(request):
         else:
             messages.error(request, 'No tienes un viaje activo, puedes unirte a alguno')
             return redirect('lista_viajes')
-        
+
     return redirect('detalle_viaje', viaje_id=viaje.id)
 
 @login_required
 def accion_viaje(request,accion,viaje_id):
     viaje = Viaje.objects.get(id=viaje_id)
-    if accion == 'iniciar' and viaje.condcutor == request.user:
+    if accion == 'iniciar' and viaje.conductor == request.user:
         viaje.condicion = 'En curso'
         viaje.save()
         return redirect('viaje')
-    elif accion == 'cancelar' and viaje.condcutor == request.user:
+    elif accion == 'cancelar' and viaje.conductor == request.user:
         viaje.condicion = 'Cancelado'
         viaje.save()
         return redirect('crear_viaje')
-    elif accion == 'unirse' and request.user not in viaje.pasajeros:
+    elif accion == 'unirse' and request.user not in viaje.pasajeros.all():
         viaje.unirse_al_viaje(request.user)
         viaje.save()
         return redirect('viaje')
-    elif accion=='finalizar' and viaje.condcutor == request.user:
+    elif accion=='finalizar' and viaje.conductor == request.user:
         viaje.condicion = 'Finalizado'
         viaje.save()
         return redirect('crear_viaje')
