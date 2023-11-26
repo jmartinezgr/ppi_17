@@ -6,6 +6,17 @@ from django.conf import settings
 
 
 def get_lat_long_from_address(address, api_key):
+    """
+    Obtiene las coordenadas de latitud y longitud de una dirección utilizando la API de geocodificación de Google.
+
+    Args:
+        address (str): La dirección para la cual se desean obtener las coordenadas.
+        api_key (str): La clave de la API de Google Maps para la autenticación.
+
+    Returns:
+        tuple: Una tupla con las coordenadas de latitud y longitud en formato (latitud, longitud).
+               Si la geocodificación no es exitosa, devuelve (None, None).
+    """
     base_url = "https://maps.googleapis.com/maps/api/geocode/json"
     params = {
         'address': address,
@@ -25,7 +36,20 @@ def get_lat_long_from_address(address, api_key):
         print(f"Geocoding failed with status: {data['status']}")
         return None, None
 
+
 def calcular_distancia_tiempo(coord_user, coord_temp):
+    """
+    Calcula la distancia y el tiempo de viaje entre dos coordenadas utilizando la API de direcciones de Google Maps.
+
+    Args:
+        coord_user (tuple): Una tupla con las coordenadas de latitud y longitud del usuario.
+        coord_temp (tuple): Una tupla con las coordenadas de latitud y longitud del destino.
+
+    Returns:
+        dict: Un diccionario con las claves 'distancia' y 'tiempo_viaje' que contienen
+              la distancia y el tiempo de viaje respectivamente.
+
+    """
     gmaps = googlemaps.Client(key=settings.GOOGLE_MAPS_API_KEY)
 
     # Convierte las coordenadas a formato 'latitud,longitud'
@@ -40,4 +64,5 @@ def calcular_distancia_tiempo(coord_user, coord_temp):
     tiempo_viaje = result['rows'][0]['elements'][0]['duration']['text']
 
     return {'distancia': distancia, 'tiempo_viaje': tiempo_viaje}
+
 

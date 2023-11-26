@@ -32,7 +32,24 @@ import conductor_amigo.settings as settings
 
 @login_required
 def buscar_usuario(request):
+    """
+    Muestra una lista de usuarios filtrados según los parámetros de búsqueda.
+
+    Args:
+        request (HttpRequest): El objeto HttpRequest que representa la solicitud del usuario.
+
+    Returns:
+        HttpResponse: Una respuesta HTTP que muestra la plantilla 'pasajeros/busqueda_usuarios.html'
+                     con la lista de usuarios filtrados.
+
+    Raises:
+        None
+
+    Notes:
+        - Esta vista requiere que el usuario esté autenticado. La decoración '@login_required' se
+          encarga de redirigir a la página de inicio de sesión si el usuario no ha iniciado sesión.
     # Obtén los parámetros de búsqueda del request
+    """
     username = request.GET.get('username', '')
 
     # Filtra los usuarios según los parámetros de búsqueda
@@ -236,9 +253,26 @@ def profile(request, username=None):
     return render(request, 'pasajeros/profile.html', {'user': user})
 
 def get_route(request):
-    # Verificar si la solicitud es un POST
+    """
+    Obtiene y muestra la ruta entre dos ubicaciones utilizando la API de Google Maps.
+
+    Si la solicitud es un POST, se procesa el formulario con las ubicaciones de origen
+    y destino, y se utiliza la API de direcciones de Google Maps para obtener la ruta.
+    Luego, se renderiza la página 'ruta.html' con los resultados de la dirección.
+
+    Si la solicitud no es un POST, se renderiza la página 'formulario.html' para que
+    el usuario ingrese las ubicaciones de origen y destino.
+
+    Args:
+        request (HttpRequest): El objeto HttpRequest que representa la solicitud del usuario.
+
+    Returns:
+        HttpResponse: Una respuesta HTTP que renderiza la página 'ruta.html' con los resultados
+                     de la dirección si la solicitud es un POST; de lo contrario, renderiza
+                     la página 'formulario.html'.
+    """
+
     if request.method == 'POST':
-        # Obtener las ubicaciones de origen y destino del formulario POST
         origin = request.POST.get('origin')
         destination = request.POST.get('destination')
 
@@ -255,7 +289,24 @@ def get_route(request):
         return render(request, 'formulario.html')
 
 class UserProfileUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
-    # Modelo que se está actualizando
+    """
+    Vista basada en clase para la actualización del perfil de usuario.
+
+    Esta vista utiliza el modelo de Usuario para actualizar la información del usuario
+    actualmente autenticado. Requiere autenticación para acceder y muestra un formulario
+    con campos específicos para la edición del perfil.
+
+    Attributes:
+        model (Model): El modelo que se está actualizando (Usuario en este caso).
+        template_name (str): El nombre de la plantilla utilizada para la vista.
+        fields (list): Lista de campos que se mostrarán y podrán editar en el formulario.
+        success_message (str): Mensaje de éxito mostrado después de una actualización exitosa.
+
+    Methods:
+        get_object(queryset=None): Obtiene el objeto que se va a actualizar (usuario actual).
+        form_valid(form): Asigna el usuario actual al campo 'usuario' en el formulario y
+        llama al método form_valid de la clase padre.
+    """
     model = Usuario
 
     # Nombre de la plantilla utilizada para la vista
@@ -268,10 +319,28 @@ class UserProfileUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView)
     success_message = "Perfil actualizado exitosamente"
 
     def get_object(self, queryset=None):
-        # Obtiene el objeto que se va a actualizar (en este caso, el usuario actual)
+        """
+        Obtiene el objeto que se va a actualizar (usuario actual).
+
+        Args:
+            queryset: Conjunto de objetos desde el cual seleccionar el objeto.
+
+        Returns:
+            Model: Objeto de modelo que se va a actualizar (usuario actual).
+        """
         return self.request.user
 
     def form_valid(self, form):
+        """
+        Asigna el usuario actual al campo 'usuario' en el formulario y
+        llama al método form_valid de la clase padre.
+
+        Args:
+            form: El formulario utilizado en la vista.
+
+        Returns:
+            HttpResponse: Respuesta HTTP después de una actualización exitosa.
+        """
         # Asigna el usuario actual al campo 'usuario' en el formulario
         form.instance.usuario = self.request.user
 
@@ -285,18 +354,51 @@ class UserProfileUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView)
         return reverse('profile', args=[str(self.request.user.username)])
 
 class ProfilePasswordChangeView(PasswordChangeView):
+    """
+    Vista basada en clase para el cambio de contraseña de perfil de usuario.
+
+    Esta vista hereda de PasswordChangeView de Django y personaliza algunos aspectos,
+    como el template utilizado, la URL de éxito y el formulario de cambio de contraseña.
+
+    Attributes:
+        template_name (str): El nombre de la plantilla utilizada para la vista.
+        success_url (str): La URL a la que se redirige después de un cambio de contraseña exitoso.
+        form_class (Form): Clase del formulario utilizado para el cambio de contraseña.
+
+    Methods:
+        get_context_data(**kwargs): Obtiene datos de contexto y agrega información adicional.
+        form_valid(form): Realiza acciones adicionales después de un cambio de contraseña exitoso.
+        form_invalid(form): Muestra un mensaje de error en caso de problemas con el formulario.
+    """
+
     template_name = 'pasajeros/cambio_contraseña.html'
     success_url = reverse_lazy('login_view')
     form_class = CustomPasswordChangeForm
 
     def get_context_data(self, **kwargs):
-        # Obtener datos de contexto y agregar información adicional
+        """
+        Obtiene datos de contexto y agrega información adicional.
+
+        Args:
+            **kwargs: Argumentos clave adicionales.
+
+        Returns:
+            dict: Datos de contexto actualizados.
+        """
         context = super().get_context_data(**kwargs)
         context['password_changed'] = self.request.session.get('password_changed', False)
         return context
 
     def form_valid(self, form):
-        # Actualizar el campo created_by_admin del modelo Usuario
+        """
+        Realiza acciones adicionales después de un cambio de contraseña exitoso.
+
+        Args:
+            form: El formulario utilizado en la vista.
+
+        Returns:
+            HttpResponse: Respuesta HTTP después de un cambio de contraseña exitoso.
+        """
         usuario = Usuario.objects.get(username=self.request.user.username)
         usuario.created_by_admin = False
         usuario.save()
@@ -308,6 +410,15 @@ class ProfilePasswordChangeView(PasswordChangeView):
         return super().form_valid(form)
 
     def form_invalid(self, form):
+        """
+        Muestra un mensaje de error en caso de problemas con el formulario.
+
+        Args:
+            form: El formulario utilizado en la vista.
+
+        Returns:
+            HttpResponse: Respuesta HTTP después de un problema con el formulario.
+        """
         # Mostrar mensaje de error en caso de un problema con el formulario
         messages.error(
             self.request,
@@ -318,14 +429,52 @@ class ProfilePasswordChangeView(PasswordChangeView):
         return super().form_invalid(form)
 
 class CalificacionView(View):
+    """
+    Vista basada en clase para la calificación de usuarios.
+
+    Esta vista permite a un usuario calificar a otro usuario a través de un formulario.
+    La calificación se almacena en el modelo Calificacion y se muestra en la página de perfil
+    del usuario calificado.
+
+    Attributes:
+        template_name (str): El nombre de la plantilla utilizada para la vista.
+
+    Methods:
+        get(request, username): Maneja las solicitudes GET, renderizando el formulario de calificación.
+        post(request, username): Maneja las solicitudes POST, procesando el formulario de calificación
+                                  y almacenando la calificación en la base de datos.
+    """
+
     template_name = 'pasajeros/calificar.html'
 
     def get(self, request, username):
+        """
+        Maneja las solicitudes GET, renderizando el formulario de calificación.
+
+        Args:
+            request (HttpRequest): El objeto HttpRequest que representa la solicitud del usuario.
+            username (str): El nombre de usuario del usuario que se va a calificar.
+
+        Returns:
+            HttpResponse: Una respuesta HTTP que renderiza el formulario de calificación.
+        """
         usuario_calificado = Usuario.objects.get(username=username)
         form = CalificacionForm()
         return render(request, self.template_name, {'usuario_calificado': usuario_calificado, 'form': form})
 
     def post(self, request, username):
+        """
+        Maneja las solicitudes POST, procesando el formulario de calificación
+        y almacenando la calificación en la base de datos.
+
+        Args:
+            request (HttpRequest): El objeto HttpRequest que representa la solicitud del usuario.
+            username (str): El nombre de usuario del usuario que se va a calificar.
+
+        Returns:
+            HttpResponse: Una respuesta HTTP que redirige a la página de perfil del usuario calificado
+                         después de procesar el formulario de calificación.
+        """
         usuario_calificado = Usuario.objects.get(username=username)
         form = CalificacionForm(request.POST)
 

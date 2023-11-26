@@ -245,6 +245,26 @@ class Role(models.Model):
         return self.name
 
 class Calificacion(models.Model):
+    """
+    Modelo que representa una calificación dada por un usuario a otro usuario.
+
+    Cada instancia de esta clase almacena la calificación proporcionada por un usuario
+    (calificador) a otro usuario (usuario_calificado). La puntuación debe ser un entero positivo.
+
+    Attributes:
+        calificador (ForeignKey): Relación con el modelo de usuario para el calificador.
+        usuario_calificado (ForeignKey): Relación con el modelo de usuario para el usuario calificado.
+        puntuacion (PositiveIntegerField): Campo para almacenar la puntuación dada en la calificación.
+
+    Meta:
+        unique_together (list): Restricción que garantiza que un usuario solo pueda calificar a otro
+                                usuario una vez.
+
+    Methods:
+        save(*args, **kwargs): Sobrescribe el método save para actualizar la calificación del usuario
+                               calificado después de guardar una nueva calificación.
+    """
+
     calificador = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='calificaciones_hechas')
     usuario_calificado = models.ForeignKey('usuarios.Usuario', on_delete=models.CASCADE, related_name='calificaciones_recibidas')
     puntuacion = models.PositiveIntegerField()
@@ -253,5 +273,16 @@ class Calificacion(models.Model):
         unique_together = ['calificador', 'usuario_calificado']
 
     def save(self, *args, **kwargs):
+        """
+        Sobrescribe el método save para actualizar la calificación del usuario
+        calificado después de guardar una nueva calificación.
+
+        Args:
+            *args: Argumentos posicionales adicionales.
+            **kwargs: Argumentos clave adicionales.
+
+        Returns:
+            None
+        """
         super().save(*args, **kwargs)
         self.usuario_calificado.actualizar_calificacion()
