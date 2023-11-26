@@ -126,13 +126,22 @@ import os
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-# settings.py
-
+# settings.py to web
+"""
 STATIC_URL = '/static/'
 STATIC_ROOT = '/home/UNconductorAmigo/ppi_17/conductor_amigo/static'
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = '/home/UNconductorAmigo/ppi_17/conductor_amigo/media'
+MEDIA_ROOT = '/home/UNconductorAmigo/ppi_17/conductor_amigo/media'"""
+
+#Settings.py to local 
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+    ]
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
