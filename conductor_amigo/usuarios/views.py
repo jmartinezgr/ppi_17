@@ -5,6 +5,14 @@ import json
 
 import googlemaps
 
+import os
+from glob import glob
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .forms import RegistroConductorForm, RegistroEstudianteForm
+from utils.calcular_distancia import es_carnet_nuevo,cargar_imagen
+import cv2
+
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
@@ -121,6 +129,12 @@ def login_view(request):
     
     return render(request, 'ingreso/login.html', {'form': form})
 
+def cargar_imagenes_carnets():
+    carpeta_carnets = os.path.join(os.path.dirname(__file__), 'static/carnets')  # Ruta completa a la carpeta carnets
+    imagenes_carnets = [cv2.imread(ruta) for ruta in glob(os.path.join(carpeta_carnets, '*.png'))]
+    imagenes_carnets = [cargar_imagen(imagen) for imagen in imagenes_carnets]
+    return imagenes_carnets
+
 def registro_inicial(request):
     """
     Vista para la página de registro inicial.
@@ -143,6 +157,9 @@ def registro_conductor(request):
     Returns:
         Renderiza la plantilla 'ingreso/registro_conductor.html' con el formulario de registro de conductores.
     """
+
+    imagenes_exist = cargar_imagenes_carnets()
+
     if request.method == 'POST':
         form = RegistroConductorForm(request.POST, request.FILES)
         if form.is_valid():
@@ -152,13 +169,16 @@ def registro_conductor(request):
             # Verifica y valida las imágenes subidas
             for file, field_name in [(user.foto_carnet, 'foto_carnet'), (user.foto_licencia_conducir, 'foto_licencia_conducir'), (user.foto_usuario, 'foto_usuario')]:
                 if user.foto_usuario and not file.name.lower().endswith('.png'):
-                    form.add_error(field_name, "Por favor, sube solo archivos PNG.")
                     messages.error(request, "Por favor, sube solo archivos PNG.")
                     return render(request, 'ingreso/registro_conductor.html', {'form': form})
                 elif not user.foto_usuario and not file.name.lower().endswith('.png'):
                     form.add_error(field_name, "Por favor, sube solo archivos PNG.")
                     messages.error(request, "Por favor, sube solo archivos PNG.")                   
                     return render(request, 'ingreso/registro_conductor.html', {'form': form})
+                
+            if not es_carnet_nuevo(cargar_imagen(user.foto_carnet),imagenes_exist):
+                messages.error(request, "Esta foto no corresponde a un carnet")                   
+                return render(request, 'ingreso/registro_conductor.html', {'form': form})
             
             user.save()
             messages.success(request, "Tu cuenta de conductor ha sido creada. Ahora puedes iniciar sesión.")
@@ -218,8 +238,6 @@ def registro_estudiante(request):
         form = RegistroEstudianteForm()
 
     return render(request, 'ingreso/registro_estudiante.html', {'form': form})
-
-
 
 def privacidad(request):
     """
