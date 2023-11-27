@@ -91,7 +91,7 @@ def crear_viaje(request):
 
     usuario_pre = Usuario.objects.get(username=request.user.username)
 
-    viajes_activos_en_curso = Viaje.objects.filter(pasajeros=usuario_pre, condicion__in=('Activo', 'En curso'))
+    viajes_activos_en_curso = Viaje.objects.filter(conductor=usuario_pre, condicion__in=('Activo', 'En curso'))
 
     # Verifica si hay algún viaje activo o en curso
     if viajes_activos_en_curso.exists():

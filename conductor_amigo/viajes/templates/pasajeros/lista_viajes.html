@@ -11,7 +11,19 @@
 {% block content %}
 <div class="container">
     <h3>Lista de Viajes Disponibles</h3>
-
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags == 'success' %}
+                <div class="alert alert-success" role="alert" id="Errorcito">
+                    {{ message }}
+                </div>
+            {% elif message.tags == 'error' %}
+                <div class="alert alert-danger" role="alert" id="Errorcito">
+                    {{ message }}
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
     <div class="row">
         {% for viaje in viajes %}
         <div class="col-md-6">
@@ -28,4 +40,13 @@
         {% endfor %}
     </div>
 </div>
+
+<script>
+    setTimeout(function () {
+        var errorMessage = document.getElementById("Errorcito");
+        if (errorMessage) {
+            errorMessage.style.display = "none";
+        }
+    }, 4000);
+</script>
 {% endblock %}
