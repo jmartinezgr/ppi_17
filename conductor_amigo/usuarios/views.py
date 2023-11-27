@@ -10,7 +10,7 @@ from glob import glob
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import RegistroConductorForm, RegistroEstudianteForm
-from utils.calcular_distancia import es_carnet_nuevo,cargar_imagen
+from utils import calcular_distancia
 import cv2
 
 from django.views import View
@@ -132,7 +132,7 @@ def login_view(request):
 def cargar_imagenes_carnets():
     carpeta_carnets = os.path.join(os.path.dirname(__file__), 'static/carnets')  # Ruta completa a la carpeta carnets
     imagenes_carnets = [cv2.imread(ruta) for ruta in glob(os.path.join(carpeta_carnets, '*.png'))]
-    imagenes_carnets = [cargar_imagen(imagen) for imagen in imagenes_carnets]
+    imagenes_carnets = [calcular_distancia.cargar_imagen(imagen) for imagen in imagenes_carnets]
     return imagenes_carnets
 
 def registro_inicial(request):
@@ -176,7 +176,7 @@ def registro_conductor(request):
                     messages.error(request, "Por favor, sube solo archivos PNG.")                   
                     return render(request, 'ingreso/registro_conductor.html', {'form': form})
                 
-            if not es_carnet_nuevo(cargar_imagen(user.foto_carnet),imagenes_exist):
+            if not calcular_distancia.es_carnet_nuevo(calcular_distancia.cargar_imagen(user.foto_carnet),imagenes_exist):
                 messages.error(request, "Esta foto no corresponde a un carnet")                   
                 return render(request, 'ingreso/registro_conductor.html', {'form': form})
             
