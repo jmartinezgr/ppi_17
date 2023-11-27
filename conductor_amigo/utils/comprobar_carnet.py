@@ -24,4 +24,4 @@ def es_carnet_nuevo(imagen_nueva, imagenes_exist):
         if correlacion_histograma > 0.8 and ssim_index > 0.8:
             return True
 
-    return True
+    return False
