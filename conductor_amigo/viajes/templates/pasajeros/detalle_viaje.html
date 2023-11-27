@@ -3,11 +3,19 @@
 {% block content %}
 <div class="container mt-4">
     <h1 class="mb-4">Detalles del Viaje</h1>
-    {% for message in messages %}
-    <div class="alert alert-danger" id="Errocito">
-      {{ message }}
-    </div>
-    {% endfor %}
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags == 'success' %}
+                <div class="alert alert-success" role="alert" id="Errorcito">
+                    {{ message }}
+                </div>
+            {% elif message.tags == 'error' %}
+                <div class="alert alert-danger" role="alert" id="Errorcito">
+                    {{ message }}
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="row">
@@ -62,54 +70,48 @@
                     </div>
                 </div>
             </div>
-
             <!-- Columna 3 - Pasajeros -->
             <div class="col-lg-4">
                 <div class="card mb-4" id="tarjeta" style="min-height: 470px;">
                     <div class="card-body">
                         <h5 class="card-title">Pasajeros</h5>
-                        {% with puestos_maximos=viaje.puestos_maximos %}
-                            {% for _ in numeros %}
-                                <div class="mb-3">
-                                    {% if viaje.pasajeros.all %}
-                                        {% if forloop.counter0 < viaje.pasajeros.count %}
-                                            {# Si hay un pasajero en este puesto, mostrar la información del pasajero #}
-                                            <div class="row">
-                                                <div class="col-4">
-                                                    <img src="{{ viaje.pasajeros.all.forloop.counter0.foto_usuario.url }}" alt="{{ viaje.pasajeros.all.forloop.counter0.username }}" class="img-fluid" style="max-height: 50px;">
-                                                </div>
-                                                <div class="col-8">
-                                                    <p class="card-text">Nombre: {{ viaje.pasajeros.all.forloop.counter0.nombres }} {{ viaje.pasajeros.all.forloop.counter0.apellidos }}
-                                                        {% if viaje.pasajeros.all.forloop.counter0 == request.user %}
-                                                            (Tú)
-                                                        {% endif %}
-                                                    </p>
-                                                    <p class="card-text">Calificación: {{ viaje.pasajeros.all.forloop.counter0.calificacion }}</p>
-                                                </div>
-                                            </div>
-                                        {% else %}
-                                            {# Si no hay pasajero en este puesto, mostrar información predeterminada #}
-                                            <img src="{% static 'images/no_foto.jpg' %}" alt="No hay foto de perfil" class="img-fluid" style="max-height: 50px;">
-                                            <p class="card-text">Puesto Vacío</p>
-                                        {% endif %}
-                                    {% else %}
-                                        {# Si no hay pasajeros en el viaje, mostrar información predeterminada #}
+                        {% if viaje.pasajeros.all %}
+                            {% for pasajero in viaje.pasajeros.all %}
+                                <div class="mb-3 mt-4">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <img src="{{ pasajero.foto_usuario.url }}" alt="{{ pasajero.username }}" class="img-fluid" style="max-height: 80px;">
+                                        </div>
+                                        <div class="col-8">
+                                            <p class="card-text" style="font-size: 15px;">
+                                                Nombre: {{ pasajero.nombres }} {{ pasajero.apellidos }}{% if pasajero == request.user %}(Tú){% endif %}
+                                                Calificación: {{ pasajero.calificacion }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        {# Mostrar puestos vacíos #}
+                        {% for _ in puestos_vacios %}
+                            <div class="mb-3 mt-4">
+                                <div class="row">
+                                    <div class="col-4">
                                         <img src="{% static 'images/no_foto.jpg' %}" alt="No hay foto de perfil" class="img-fluid" style="max-height: 50px;">
+                                    </div>
+                                    <div class="col-8">
                                         <p class="card-text">Puesto Vacío</p>
-                                    {% endif %}
+                                    </div>
                                 </div>
-                            {% endfor %}
-                        {% endwith %}
-                        
-                        
+                            </div>
+                        {% endfor %}
+
                         {% if viaje.conductor != user %}                          
-                            {% if user in viaje.pasajeros %}
+                            {% if user in viaje.pasajeros.all %}
                                 <button class="btn btn-success form-control">Enviar mensaje al conductor</button>
                             {% else %}
-                            <a href="{% url 'accion_viaje' accion='unirse' viaje_id=viaje.id%}" class="btn btn-success form-control">Unirse al Viaje</a>
+                                <a href="{% url 'accion_viaje' accion='unirse' viaje_id=viaje.id%}" class="btn btn-success form-control">Unirse al Viaje</a>
                             {% endif %}
                         {% endif %}
-
                     </div>
                 </div>
             </div>
