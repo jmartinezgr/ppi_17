@@ -24,11 +24,13 @@
                 <div class="card mb-4" id="tarjeta" style="min-height: 470px;">
                     <div class="card-body">
                         <h5 class="card-title">Conductor</h5>
-                        {% if viaje.conductor.foto_usuario %}
-                            <img src="{{ viaje.conductor.foto_usuario.url }}" alt="{{ viaje.conductor.username }}" class="img-fluid mb-3" style="max-height: 150px;">
-                        {% else %}
-                            <img src="{% static 'images/no_foto.jpg' %}" alt="No hay foto de perfil" style="max-height: 150px;">
-                        {% endif %}
+                        <a href="{% url 'profile' viaje.conductor.username %}"> 
+                            {% if viaje.conductor.foto_usuario %}
+                                <img src="{{ viaje.conductor.foto_usuario.url }}" alt="{{ viaje.conductor.username }}" class="img-fluid mb-3" style="max-height: 150px;">
+                            {% else %}
+                                <img src="{% static 'images/no_foto.jpg' %}" alt="No hay foto de perfil" style="max-height: 150px;">
+                            {% endif %}
+                        </a>
                         <p class="card-text">Nombre: 
                             {% if viaje.conductor == user %}
                                 {{ viaje.conductor.nombres }} {{ viaje.conductor.apellidos }} (Tú)
@@ -80,11 +82,15 @@
                                 <div class="mb-3 mt-4">
                                     <div class="row">
                                         <div class="col-4">
+                                            {% if pasajero.foto_usuario %}
                                             <img src="{{ pasajero.foto_usuario.url }}" alt="{{ pasajero.username }}" class="img-fluid" style="max-height: 80px;">
+                                            {% else %}
+                                            <img src="{% static 'images/no_foto.jpg' %}" alt="No hay foto de perfil" class="img-fluid" style="max-height: 80px;">
+                                            {% endif %}
                                         </div>
                                         <div class="col-8">
                                             <p class="card-text" style="font-size: 15px;">
-                                                Nombre: {{ pasajero.nombres }} {{ pasajero.apellidos }}{% if pasajero == request.user %}(Tú){% endif %}
+                                                Nombre: <a href="{% url 'profile' pasajero.username %}" style="text-decoration: none;">{{ pasajero.nombres }}</a> {{ pasajero.apellidos }}{% if pasajero == request.user %} (Tú) {% endif %}
                                                 Calificación: {{ pasajero.calificacion }}
                                             </p>
                                         </div>

@@ -6,11 +6,12 @@ import json
 import googlemaps
 
 import os
+import numpy as np
 from glob import glob
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import RegistroConductorForm, RegistroEstudianteForm
-from utils import calcular_distancia
+from utils import comprobar_carnet
 import cv2
 
 from django.views import View
@@ -22,7 +23,7 @@ from django.urls import reverse, reverse_lazy
 from django.shortcuts import render, redirect
 from typing import Any
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import UserSearchForm, CustomAuthenticationForm, LicenseVerificationForm,RegistroConductorForm, RegistroEstudianteForm, CoordenadaForm, UserForm, CustomPasswordChangeForm
+from .forms import UserSearchForm, CustomAuthenticationForm, LicenseVerificationForm,RegistroConductorForm, RegistroEstudianteForm, UserForm, CustomPasswordChangeForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
@@ -32,7 +33,6 @@ from .forms import (
     LicenseVerificationForm,
     RegistroConductorForm,
     RegistroEstudianteForm,
-    CoordenadaForm,
     CalificacionForm,
 )
 from .models import Role, Usuario, Calificacion
@@ -132,7 +132,7 @@ def login_view(request):
 def cargar_imagenes_carnets():
     carpeta_carnets = os.path.join(os.path.dirname(__file__), 'static/carnets')  # Ruta completa a la carpeta carnets
     imagenes_carnets = [cv2.imread(ruta) for ruta in glob(os.path.join(carpeta_carnets, '*.png'))]
-    imagenes_carnets = [calcular_distancia.cargar_imagen(imagen) for imagen in imagenes_carnets]
+    imagenes_carnets = [comprobar_carnet.cargar_imagen(imagen) for imagen in imagenes_carnets]
     return imagenes_carnets
 
 def registro_inicial(request):
@@ -176,7 +176,7 @@ def registro_conductor(request):
                     messages.error(request, "Por favor, sube solo archivos PNG.")                   
                     return render(request, 'ingreso/registro_conductor.html', {'form': form})
                 
-            if not calcular_distancia.es_carnet_nuevo(calcular_distancia.cargar_imagen(user.foto_carnet),imagenes_exist):
+            if not comprobar_carnet.es_carnet_nuevo(comprobar_carnet.cargar_imagen(user.foto_carnet.path),imagenes_exist):
                 messages.error(request, "Esta foto no corresponde a un carnet")                   
                 return render(request, 'ingreso/registro_conductor.html', {'form': form})
             
@@ -205,6 +205,8 @@ def registro_estudiante(request):
     Returns:
         Renderiza la plantilla 'ingreso/registro_estudiante.html' con el formulario de registro de estudiantes.
     """
+    imagenes_exist = cargar_imagenes_carnets()
+    
     if request.method == 'POST':
         form = RegistroEstudianteForm(request.POST, request.FILES)
         if form.is_valid():
@@ -224,16 +226,42 @@ def registro_estudiante(request):
                         form.add_error(field_name, "Por favor, sube solo archivos PNG.")
                         messages.error(request, "Por favor, sube solo archivos PNG.")   
                         return render(request, 'ingreso/registro_estudiante.html', {'form': form})
+            
+            # Cargar la imagen desde el formulario y redimensionar a 300x300
+            try:
+                # Obtener los datos binarios de la imagen
+                image_data = form.cleaned_data['foto_carnet'].read()
+                
+                # Convertir los datos binarios a una matriz numpy
+                nparr = np.frombuffer(image_data, np.uint8)
+                
+                # Decodificar la matriz a una imagen
+                image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+                
+                # Verificar si la imagen se decodificó correctamente
+                if image is None or image.size == 0:
+                    messages.error(request, "Error al cargar la imagen.")
+                    return render(request, 'ingreso/registro_estudiante.html', {'form': form})
+                
+                resized_image = cv2.resize(image, (300, 300))
+                
+                # Verificar si la imagen redimensionada es un carnet nuevo
+                if not comprobar_carnet.es_carnet_nuevo(resized_image, imagenes_exist):
+                    messages.error(request, "Esta foto no corresponde a un carnet")                   
+                    return render(request, 'ingreso/registro_estudiante.html', {'form': form})
+            except Exception as e:
+                # Manejar cualquier error al procesar la imagen
+                messages.error(request, f"Error al procesar la imagen: {e}")
+                return render(request, 'ingreso/registro_estudiante.html', {'form': form})
+
+            # Continuar con el resto del código
             user.save()
             messages.success(request, "Tu cuenta de estudiante ha sido creada. Ahora puedes iniciar sesión.")
             return redirect('login_view')
-        else:
-            if 'username' in form.errors:
-                messages.error(request, "Nombre de usuario ya existe.")
-            elif 'password2' in form.errors:
-                messages.error(request, "Contraseña no es suficientemente segura. Prueba agregar diferentes tipos de caracteres.")
-            elif 'foto_carnet' in form.errors:
-                messages.error(request, "Por favor, sube una imagen PNG como foto de tu carnet")
+
+        # Resto del código para manejar errores y renderizar el formulario
+
+    # Resto del código para manejar la solicitud GET y renderizar el formulario
     else:
         form = RegistroEstudianteForm()
 
