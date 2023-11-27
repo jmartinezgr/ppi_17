@@ -15,9 +15,10 @@ from utils.obtener_coordenadas import calcular_distancia_tiempo
 from datetime import datetime
 import folium
 import re
+import ast
 ####Librerias de la app
 from .models import Viaje
-from .forms import ViajesForm
+from .forms import ViajesForm,ENDING_PLACE_CHOICES, STARTING_PLACE_CHOICES
 ####Librerias de otras apps
 from usuarios.models import Usuario
 
@@ -32,18 +33,22 @@ def lista_viajes(request):
     Returns:
         Renderiza la plantilla 'pasajeros/lista_viajes.html' con la lista de viajes.
     """
-    # Obtener viajes activos ordenados por fecha de inicio
     viajes_activos = Viaje.objects.filter(
         Q(condicion='Activo')
     ).order_by('fecha_inicio')
 
+    # Mapear las coordenadas a sus equivalentes
+    destinos_equivalentes = dict(ENDING_PLACE_CHOICES)
+    puntos_partida_equivalentes = dict(STARTING_PLACE_CHOICES)
+
     # Preparar datos para el contexto
     viajes = [
         {
-            'conductor': viaje.conductor.username,  # Asumiendo que el conductor es un usuario
-            'destino': viaje.destino,
+            'conductor': viaje.conductor.username,
+            'inicio': puntos_partida_equivalentes.get(ast.literal_eval(viaje.inicio), viaje.inicio),
+            'destino': destinos_equivalentes.get(ast.literal_eval(viaje.destino), viaje.destino),
             'hora_salida': viaje.fecha_inicio.strftime('%I:%M %p'),
-            'id':viaje.id
+            'id': viaje.id
         }
         for viaje in viajes_activos
     ]

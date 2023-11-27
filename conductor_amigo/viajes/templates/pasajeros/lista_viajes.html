@@ -18,6 +18,7 @@
             <div class="card mb-4">
                 <div class="card-body">
                     <h5 class="card-title">Conductor: {{ viaje.conductor }}</h5>
+                    <p class="card-text">Inicio: {{ viaje.inicio }}</p>
                     <p class="card-text">Destino: {{ viaje.destino }}</p>
                     <p class="card-text">Hora de Salida: {{ viaje.hora_salida }}</p>
                     <a href="{% url 'detalle_viaje' viaje.id %}" class="btn btn-primary">Aplicar al Viaje</a>
