@@ -20,28 +20,6 @@ STARTING_PLACE_CHOICES = [
     ((6.263575166707227, -75.57482065639084), 'Sede Rio - Autopista Norte'),
 ]
 
-class CoordenadaForm(forms.Form):
-    username = forms.CharField(
-        max_length=100,
-        required=False,
-        label="Nombre de Usuario",
-        widget=forms.TextInput(attrs={'class': 'form-control rounded-pill'})
-    )
-
-    ending_place_type = forms.ChoiceField(
-        choices=ENDING_PLACE_CHOICES,
-        required=False,
-        label="Lugar de destino",
-        widget=forms.Select(attrs={'class': 'form-control rounded-pill', 'style': 'text-align:center;'})
-    )
-
-    starting_place_type = forms.ChoiceField(
-        choices=STARTING_PLACE_CHOICES,
-        required=False,
-        label="Lugar de partida",
-        widget=forms.Select(attrs={'class': 'form-control rounded-pill', 'style': 'text-align:center;'})
-    )
-
 class ViajesForm(forms.Form):
     inicio = forms.ChoiceField(
         choices=STARTING_PLACE_CHOICES,
@@ -70,7 +48,7 @@ class ViajesForm(forms.Form):
         label="Puestos Máximos",
         initial=1,
         max_value=4,
-        widget=forms.NumberInput(attrs={'class': 'form-control rounded-pill'}),
+        widget=forms.NumberInput(attrs={'class': 'form-control rounded-pill','max':4}),
     )
 
     discapacidades_aceptadas = forms.ChoiceField(

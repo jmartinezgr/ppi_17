@@ -109,6 +109,10 @@ def crear_viaje(request):
 
             conductor = Usuario.objects.get(username=request.user.username)
 
+            if destino is None or inicio is None:
+                messages.error(request,"Debes ingresar opciones validas de inicio y destino")
+                return render(request, 'conductores/crear_viaje.html', {'form': form})
+
             viaje = Viaje.objects.create(
                 inicio=inicio,
                 destino=destino,
