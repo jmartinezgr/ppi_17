@@ -32,8 +32,8 @@ class Viaje(models.Model):
     condicion = models.CharField('Condición del Viaje', max_length=23, choices=CONDICIONES_VIAJE, default='Activo')
     puestos_maximos = models.IntegerField('Puestos Máximos', default=1)
     discapacidades = models.CharField('Discapacidades Aceptadas',choices=INCAPACIDAD_CHOICES,default='ninguna',max_length=30)
-    tipo_vehiculo = models.CharField('Tipo de Vehículo', max_length=50, choices=(('Carro', 'Carro'), ('Moto', 'Moto')))
-    placa_vehiculo = models.CharField('Placa del Vehículo', max_length=20)
+    tipo_vehiculo = models.CharField('Tipo de Vehículo', max_length=50, choices=(('Carro', 'Carro'), ('Moto', 'Moto')),default="Carro")
+    placa_vehiculo = models.CharField('Placa del Vehículo', max_length=20,default="XXXXXXX")
 
     def __str__(self):
         """

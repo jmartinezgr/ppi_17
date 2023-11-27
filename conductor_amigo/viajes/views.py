@@ -14,6 +14,7 @@ from utils.obtener_coordenadas import calcular_distancia_tiempo
 ####Librerias de Python
 from datetime import datetime
 import folium
+import re
 ####Librerias de la app
 from .models import Viaje
 from .forms import ViajesForm,CoordenadaForm
@@ -130,9 +131,11 @@ def crear_viaje(request):
         HttpResponse: Una respuesta HTTP que redirige a la página de detalles del viaje creado
                       o renderiza la plantilla 'conductores/crear_viaje.html' con el formulario.
     """
+    regex_carro = re.compile(r'^[A-Z]{3}\d{3}$')
+    regex_moto = re.compile(r'^[A-Z]{3}\d{2}[A-Z]$')
 
     if request.user.rol == 'Pasajero':
-        raise Http404('Si quieres crear un viaje cambia tu perfil a conductor')
+        raise Http404('Si quieres crear un viaje crea tu perfil a conductor')
 
     usuario_pre = Usuario.objects.get(username=request.user.username)
 
@@ -156,6 +159,17 @@ def crear_viaje(request):
             tipo_vehiculo = form.cleaned_data['tipo_vehiculo']
             placa_vehiculo = form.cleaned_data['placa_vehiculo']
 
+            if tipo_vehiculo == 'moto' and puestos_maximos>1:
+                messages.error(request,"Una moto no puede llevar más de un pasajero")
+                return render(request, 'conductores/crear_viaje.html', {'form': form})
+            
+            if tipo_vehiculo == 'moto' and not regex_moto.match(placa_vehiculo):
+                messages.error(request,"Esta no es una placa valida, ingresala en formato AAA99Z")
+                return render(request, 'conductores/crear_viaje.html', {'form': form}) 
+            if tipo_vehiculo== 'carro' and not regex_carro.match(placa_vehiculo):
+                messages.error(request,"Esta no es una placa valida, ingresala en formato AAA999")
+                return render(request, 'conductores/crear_viaje.html', {'form': form})
+
             conductor = Usuario.objects.get(username=request.user.username)
 
             viaje = Viaje.objects.create(
@@ -171,11 +185,10 @@ def crear_viaje(request):
             )
 
             # Redirigir a alguna página de éxito o detalles del viaje
+            messages.success(request,'Viaje creado correctamente')
             return redirect('detalle_viaje', viaje_id=viaje.id)
-
         else:
             messages.error(request, 'Error en el formulario. Por favor, revise los campos.')
-            print(form.errors)
 
     else:
         form = ViajesForm()
