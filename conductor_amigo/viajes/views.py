@@ -37,6 +37,16 @@ def lista_viajes(request):
         Q(condicion='Activo')
     ).order_by('fecha_inicio')
 
+    usuario_pre = Usuario.objects.get(username=request.user.username)
+
+    viajes_activos_en_curso = Viaje.objects.filter(pasajeros=usuario_pre, condicion__in=('Activo', 'En curso'))
+
+    # Verifica si hay algún viaje activo o en curso
+    if viajes_activos_en_curso.exists():
+        # Levanta un error Http404 con un mensaje personalizado
+        messages.error(request,"Ya tienes un viaje activo!")
+        return redirect('viaje')
+
     # Mapear las coordenadas a sus equivalentes
     destinos_equivalentes = dict(ENDING_PLACE_CHOICES)
     puntos_partida_equivalentes = dict(STARTING_PLACE_CHOICES)
@@ -81,13 +91,14 @@ def crear_viaje(request):
 
     usuario_pre = Usuario.objects.get(username=request.user.username)
 
-    viajes_activos_en_curso = Viaje.objects.filter(conductor=usuario_pre, condicion__in=('Activo', 'En curso'))
+    viajes_activos_en_curso = Viaje.objects.filter(pasajeros=usuario_pre, condicion__in=('Activo', 'En curso'))
 
     # Verifica si hay algún viaje activo o en curso
     if viajes_activos_en_curso.exists():
         # Levanta un error Http404 con un mensaje personalizado
         messages.error(request,"Ya tienes un viaje activo!")
         return redirect('viaje')
+    
     if request.method == 'POST':
         form = ViajesForm(request.POST)
         if form.is_valid():
