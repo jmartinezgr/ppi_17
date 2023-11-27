@@ -153,10 +153,8 @@ def crear_viaje(request):
             observaciones = form.cleaned_data['observaciones']
             puestos_maximos = form.cleaned_data['puestos_maximos']
             discapacidades_aceptadas = form.cleaned_data['discapacidades_aceptadas']
-
-            print(puestos_maximos)
-            print(fecha_inicio_str)
-            print(destino)
+            tipo_vehiculo = form.cleaned_data['tipo_vehiculo']
+            placa_vehiculo = form.cleaned_data['placa_vehiculo']
 
             conductor = Usuario.objects.get(username=request.user.username)
 
@@ -168,6 +166,8 @@ def crear_viaje(request):
                 observaciones=observaciones,
                 puestos_maximos=puestos_maximos,
                 discapacidades=discapacidades_aceptadas,
+                tipo_vehiculo=tipo_vehiculo,
+                placa_vehiculo=placa_vehiculo,
             )
 
             # Redirigir a alguna página de éxito o detalles del viaje

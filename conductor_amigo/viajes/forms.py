@@ -62,7 +62,7 @@ class ViajesForm(forms.Form):
 
     observaciones = forms.CharField(
         label="Observaciones",
-        widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+        widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
         required=False,
     )
 
@@ -75,6 +75,21 @@ class ViajesForm(forms.Form):
 
     discapacidades_aceptadas = forms.ChoiceField(
         choices=Viaje.INCAPACIDAD_CHOICES,
-        label="Discapacidades Aceptadas",
+        label="Situaciones de discapacidad Aceptadas",
         widget=forms.Select(attrs={'class': 'form-control rounded-pill'}),
+    )
+    
+    tipo_vehiculo = forms.ChoiceField(
+        choices=[
+            ('carro', 'Carro'),
+            ('moto', 'Moto'),
+        ],
+        label="Tipo de Vehículo",
+        widget=forms.Select(attrs={'class': 'form-control rounded-pill'}),
+    )
+
+    placa_vehiculo = forms.CharField(
+        max_length=10,
+        label="Placa del Vehículo",
+        widget=forms.TextInput(attrs={'class': 'form-control rounded-pill'}),
     )
