@@ -173,7 +173,10 @@ def detalle_viaje(request, viaje_id):
 
     mapa_html = mapa._repr_html_()
 
-    return render(request, 'pasajeros/detalle_viaje.html', {'data_ret': data_ret, 'mapa': mapa_html, 'viaje': viaje,'numeros':range(viaje.puestos_maximos)})
+    #Puestos vacios
+    puestos_vacios = max(0, viaje.puestos_maximos - viaje.pasajeros.count())
+
+    return render(request, 'pasajeros/detalle_viaje.html', {'data_ret': data_ret, 'mapa': mapa_html, 'viaje': viaje,'numeros':range(viaje.puestos_maximos),'puestos_vacios': range(puestos_vacios)})
 
 
 @login_required
