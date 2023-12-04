@@ -1,104 +1,105 @@
-# App de Conductor Amigo ppi_17
+# Carpooling App ppi_17
 
-_**Aviso Imporante: Esta es una app que aun esta en desarrollo, y aun no esta implementada en su totalidad.Agradecemos su comprension.**_
+_**Important Notice: This is an app still in development and has not been fully implemented yet. We appreciate your understanding.**_
 
-_Este proyecto fue diseñado por y gracias la materia "Programacion para la ingenieria" ... una clase optativa de la carrera de ingenieria en sistemas e informatica de la universidad nacional de colombia y nuestra impresion grupal de usar esta asignacion para intentar ayudar a los estudiantes de la unviersidad. Esta aplicacion se trata del conocido sistema de CarPool diseñado especificamente para estudiantes de la universidad Nacional y busca usar los recursos aprendidos en clase y los recursos indivudales para lograr nuestro cometido._
+_This project was designed by and thanks to the course "Programming for Engineering"... an elective class in the Systems and Computer Engineering program at the National University of Colombia. Our group's motivation is to use this assignment to try to help university students. This application focuses on the well-known CarPool system specifically designed for National University students. It aims to utilize the resources learned in class and individual resources to achieve our goal._
 
-## Comenzando 🚀
+## Getting Started 🚀
 
-_Estas instrucciones te permitirán obtener una copia del proyecto en funcionamiento en tu máquina local para propósitos de desarrollo y pruebas, aunque puedes encontrar la aplicacion desplegada y usarla en: [UnConductorAmigo](https://unconductoramigo.pythonanywhere.com/)._
+_These instructions will allow you to get a copy of the project up and running on your local machine for development and testing purposes. However, you can find the deployed application and use it at: [UnConductorAmigo](https://unconductoramigo.pythonanywhere.com/)._
 
-Mira **Deployment** para conocer como desplegar el proyecto.
+Check out **Deployment** to learn how to deploy the project.
 
-### Pre-requisitos 📋
+### Prerequisites 📋
 
-_Que cosas necesitas para instalar el software y como instalarlas ademas de python, obviamente ( [Python](https://www.python.org/downloads/) ) ._
+_Things you need to install the software and how to install them, besides Python, of course ([Python](https://www.python.org/downloads/))._
 
 ```
 pip install django django-crispy-forms numpy scikit-image scikit-learn scipy Pillow geopandas googlemaps humanfriendly folium
 ```
 
-_O puedes instalarlo todo autmaticamente accediendo a la carpeta luego de clonar el repositorio (veras como hacerlo mas abajo) y ejecutar los siguientes comandos para instalar los querimientos_
+_Or you can install everything automatically by accessing the folder after cloning the repository (see how to do it below) and running the following commands to install the requirements._
 
 ```
 cd conductor_amigo
 pip install -r requeriments.txt
 ```
 
-### Instalación 🔧
+### Installation 🔧
 
-_Una serie de instruciones que paso a paso te van a enseñar a tener la aplicacion funcionando en tu navegador de manera local._
+_A series of step-by-step instructions that will teach you how to get the application running on your browser locally._
 
-_**Primer Paso**_
+_**First Step**_
 
-_Debes acceder a la carpeta en la que quieres guardar este proyecto a traves del simbolo de sistema (cmd) de tu computadora y clonar este repostiorio o descargarlo como un archivo **ZIP**_
+_You must access the folder where you want to save this project through the command prompt (cmd) on your computer and clone this repository or download it as a **ZIP** file._
+
 
 ```
 cd tu_carpeta_deseada
 git clone https://github.com/MateoPerez618/ppi_17.git
 ```
 
-_Habiendo clonado el repositorio deberas acceder a la carpeta del proyecto de **Django**_
+_Having cloned the repository, you should access the **Django** project folder._
 
 ```
 cd EstadisticasWebPage/TuPrimerAnilisis
 ```
 
-_Habiendo ingresado a la carpeta ejecutar podras ver en la seccion de despliegue como correr la aplicacion_
 
-## Despliegue 📦
+_Having entered the folder, you can see in the deployment section how to run the application._
 
-_Ejecutaras un comando para iniciar tu servidor local **Django** al que podras acceder con normalidad, y usar la app de la misma manera que harias con la version web, pero con la libertad de modificar su codigo y el almacenamiento de tu computadora_
+## Deployment 📦
 
-_Es hora de ejecutar el siguiente comando ... _
+_You will run a command to start your local **Django** server that you can access normally and use the app in the same way you would with the web version, but with the freedom to modify its code and the storage of your computer._
+
+_It's time to run the following command..._
 
 ```
 python manage.py runserver
 ```
 
-_Ahora podras verificar si la aplicacion de despliega correctamente en este [link](http://127.0.0.1:8000/). Es hora de que te diviertas usando la app 🙂 ( Recuerda no cerrar la bash o tu simbolo del sistema para que la app siga funcionando, y cuando desees dejar de correr el servidor puedes hacerlo ejecutando el comando ctl + c )._
 
-_Podras encontrar mas informacion sobre como iniciar y manipular una aplicacion de **Django** en este [link](https://docs.djangoproject.com/es/4.2/)._
+_Now you can check if the application deploys correctly at this [link](http://127.0.0.1:8000/). It's time for you to have fun using the app 🙂 (Remember not to close the bash or your command prompt so that the app continues to work, and when you want to stop running the server, you can do it by executing the command ctrl + c)._
 
-## Construido con 🛠️
+_You can find more information on how to start and manipulate a **Django** application at this [link](https://docs.djangoproject.com/en/4.2/)._
 
-_Menciona las herramientas que utilizaste para crear tu proyecto_
+## Built with 🛠️
 
-* [Django](http://www.dropwizard.io/1.0.2/docs/) - El framework web usado
-* [Boostrap5](https://maven.apache.org/) - Framework de css que facilito el desarrollo
-* [Numpy](https://rometools.github.io/rome/) - Usado para la manipulacion de datos
-* [Pandas](https://rometools.github.io/rome/) - Usado para la lectura de datos
-* [PythonAnywhere](https://rometools.github.io/rome/) - Host de la aplicacion
-* [Folium](https://python-visualization.github.io/folium/latest/) - Majeo de mapas
-* [Scipy](https://scipy.org/) - Recursos para el analisis de imagenes
+_Mention the tools you used to create your project_
 
-## Autores ✒️
+* [Django](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
+* [Bootstrap5](https://maven.apache.org/) - CSS framework that facilitated development
+* [Numpy](https://rometools.github.io/rome/) - Used for data manipulation
+* [Pandas](https://rometools.github.io/rome/) - Used for data reading
+* [PythonAnywhere](https://rometools.github.io/rome/) - Application host
+* [Folium](https://python-visualization.github.io/folium/latest/) - Map handling
+* [Scipy](https://scipy.org/) - Resources for image analysis
 
-_Menciona a todos aquellos que ayudaron a levantar el proyecto desde sus inicios_
+## Authors ✒️
 
-* **Juan Jose Martinez Grisales** - *Desarrollo de la aplicacion* - [jmartinezgr](https://github.com/jmartinezgr)
-* **Camilo Echeverry** - *Desarrollo de la aplicacion* - [cecheverric@unal.edu.co](mailto:cecheverric@unal.edu.co)
-* **Camilo Echeverry** - *Desarrollo de la aplicacion* - [mperezgu@unal.edu.co](mailto:mperezgu@unal.edu.co)
-* **Gabriel Awad** - *Profesor* - [gawad@unal.edu.co](mailto:gawad@unal.edu.co)
-* **Mateo Perez** - *Plantilla del Readme* - [villanuevand](https://github.com/villanuevand)
+_Mention all those who helped lift the project from its beginnings_
 
-## Licencia 📄
+* **Juan Jose Martinez Grisales** - *Application development* - [jmartinezgr](https://github.com/jmartinezgr)
+* **Camilo Echeverry** - *Application development* - [cecheverric@unal.edu.co](mailto:cecheverric@unal.edu.co)
+* **Camilo Echeverry** - *Application development* - [mperezgu@unal.edu.co](mailto:mperezgu@unal.edu.co)
+* **Gabriel Awad** - *Professor* - [gawad@unal.edu.co](mailto:gawad@unal.edu.co)
+* **Mateo Perez** - *Readme template* - [villanuevand](https://github.com/villanuevand)
 
-Este proyecto está bajo la Licencia GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 - mira el archivo [LICENSE.md](LICENSE.md) para más detalles.
+## License 📄
 
-## Agredecimientos❤️
+This project is under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 - see the file [LICENSE.md](LICENSE.md) for more details.
 
-_A todos nuestros compañeros y amigos por acomoañarnos en el desarrollo de la aplicacion_
+## Acknowledgments ❤️
 
-## Expresiones de Gratitud 🎁
+_To all our classmates and friends for joining us in the development of the application_
 
-* Comenta a otros sobre este proyecto 📢
-* Invita una cerveza 🍺 o un café ☕ a alguien del equipo.
-* Da las gracias públicamente 🤓.
-* Dona con cripto a esta dirección: `0xf253fc233333078436d111175e5a76a649890000`
+## Expressions of Gratitude 🎁
+
+* Tell others about this project 📢
+* Invite a beer 🍺 or a coffee ☕ to someone on the team.
+* Thank publicly 🤓.
 * etc.
 
 ---
 
-⌨️ con ❤️ por [jmartinezgr](https://github.com/jmartinezgr) 😊 Puedes contactarme en [jmartinezgr@unal.edu.co](mailto:jmartinezgr@unal.edu.co).
-
+⌨️ with ❤️ by [jmartinezgr](https://github.com/jmartinezgr) 😊 You can contact me at [jmartinezgr@unal.edu.co](mailto:jmartinezgr@unal.edu.co).
